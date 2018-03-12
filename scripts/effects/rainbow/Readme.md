@@ -17,5 +17,6 @@ Parameter | Description | Values
 *delay: After setting the colors on the led strip, the timer need up to 0.07ms for each led. If you have 60 leds the Arduino need up to 4ms to update the strip. Remember it when you decrease this value.
 
 ## Description
-![Algotithm][algorithm.png]
+![Algotithm](algorithm.png)
+
 The rainbow effect can be done with at least 2 colors. The value of each color will change during the time (see image above)
