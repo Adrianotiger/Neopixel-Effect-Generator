@@ -1,0 +1,82 @@
+<?php
+header('Content-Type: text/html; charset=utf-8');
+?>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>LED Strip Effects generator</title>
+    <meta name="description" content="Create Arduino sketches on the fly with all the effects.">
+    <meta name="keywords" content="ws2812, effects generator, online, led strip, arduino, teensy">  
+    <meta charset="UTF-8"> 
+    <meta name="author" content="Adriano Petrucci">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    
+    <link rel="stylesheet" href="css/form.css" />
+    <link rel="stylesheet" href="css/leds.css" />
+    
+    <script src="scripts/form_slider.js" ></script>
+    <script src="scripts/form.js" ></script>
+    <script src="scripts/effects.js" ></script>
+    <script src="scripts/loops.js" ></script>
+    <script src="scripts/strip.js" ></script>
+    <script src="scripts/arduino.js" ></script>
+        
+    <link rel="stylesheet" href="css/arduino-light.css">
+    <script src="scripts/highlight.pack.js"></script>
+    
+    <script>
+      var interval = null;
+            
+      function addLedStrip()
+      {
+        var ledStrip = LedStrips.AddLedStrip();
+        
+        document.getElementById("ledstripsdiv").appendChild(ledStrip.GetDiv());
+        document.getElementById("ledeffectsdiv").style.paddingTop = parseInt(document.getElementById("ledeffectsdiv").style.paddingTop) + 30 + "px";
+        document.getElementById("ledeffectsdiv").style.display = "block";
+      }
+      
+      var start = window.performance.now();
+            
+      function loop()
+      {
+        LedStrips.Loop();
+      }
+      
+      interval = window.setInterval(function(){loop();}, 0);
+    </script>
+    <style>
+      div
+      {
+        margin:0 auto;
+      }
+      table
+      {
+        margin:0 auto;
+      }
+    </style>
+  </head>
+  <body style='background-color:#151515;color:#ffffff;margin:0px;text-align:center;'>
+    <div id="ledeffectsdiv" style="position:relative;padding-top:200px;display:none;">
+      <h2>Effects:</h2>
+    </div>
+    
+    <div id="ledstripsdiv" style="position:fixed;width:100vw;top:0px;">
+      <div style="float:right;width:230px;height:120px;background-color:#6f6f6f;border-width:2px;border-color:#484848;border-style:ridge;border-radius:10px;">
+        <table style="height:100%;">
+          <tr><td>
+            <i title="If the browser is too slow, the animation on the led strip is much faster. This factor shows how much faster the led strip will be.">
+              Speed factor: <em id='info_speedfactor'>1x</em>
+            </i>
+          </td></tr>
+          <tr><td style="vertical-align: bottom;">
+            <input type="button" value="generate Arduino code" onclick="Arduino.GenerateCode()" />
+          </td></tr>
+        </table>
+      </div>
+      <h1>LED Strip Effects Generator</h1>
+      <h2>Led Strips:</h2>
+      <input type="button" onclick="addLedStrip();" value="Add Led Strip" />
+    </div>
+  </body>
+</html>

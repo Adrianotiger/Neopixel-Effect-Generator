@@ -1,0 +1,135 @@
+
+var Arduino = new class
+{
+  constructor()
+  {
+    this.stripsDeclaration = "//[STRIPS_DECLARATION]\n";
+    this.stripsInit = "//[STRIPS_INIT]\n";
+    this.stripsLoop = "//[STRIPS_LOOP]\n";
+    this.stripsFunctions = "//[STRIPS_FUNCTIONS]\n";
+    
+    this.baseCode = "#include <Adafruit_NeoPixel.h>\n\n";
+    this.baseCode += "class Strip\n{\npublic:\n  uint8_t   effect;\n  uint8_t   effects;\n  uint16_t  effStep;\n  unsigned long effStart;\n  Adafruit_NeoPixel strip;\n";
+      this.baseCode += "  Strip(uint16_t leds, uint8_t pin, uint8_t toteffects) : strip(leds, pin, NEO_GRB + NEO_KHZ800) {\n    effect = -1;\n    effects = toteffects;\n    Reset();\n  }\n";
+      this.baseCode += "  void Reset(){\n    effStep = 0;\n    effect = (effect + 1) % effects;\n    effStart = millis();\n  }\n";
+    this.baseCode += "};\n\n";
+    this.baseCode += "struct Loop\n{\n  uint8_t currentChild;\n  uint8_t childs;\n  bool timeBased;\n  uint16_t cycles;\n  uint16_t currentTime;\n  ";
+      this.baseCode += "Loop(uint8_t totchilds, bool timebased, uint16_t tottime) {currentTime=0;currentChild=0;childs=totchilds;timeBased=timebased;cycles=tottime;}\n};\n\n";
+    this.baseCode += "//[STRIPS_DECLARATION]\n\n";
+    this.baseCode += "";
+    this.baseCode += "//[GLOBAL_VARIABLES]\n\n";
+    this.baseCode += "void setup() {\n\n";
+    this.baseCode += "  //Your setup here:\n\n";
+    this.baseCode += "//[STRIPS_INIT]\n";
+    this.baseCode += "}\n\n";
+    this.baseCode += "void loop() {\n\n";
+    this.baseCode += "  //Your code here:\n\n";
+    this.baseCode += "  strips_loop();\n";
+    this.baseCode += "}\n\n";
+    this.baseCode += "void strips_loop() {\n";
+    this.baseCode += "//[STRIPS_LOOP]\n";
+    this.baseCode += "}\n\n";
+    this.baseCode += "//[STRIPS_FUNCTIONS]\n";
+  }
+  
+  GenerateCode()
+  {
+    var black = document.createElement("div");
+    black.className = "formoverlayblack";
+    black.addEventListener("click", function(){
+      document.body.removeChild(black);
+    }.bind(this));
+    var window = document.createElement("div");
+    window.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+    }.bind(this));
+    window.className = "formwindow";
+    var h2 = document.createElement("h2");
+    h2.appendChild(document.createTextNode("Arduino Code"));
+    window.appendChild(h2);
+    
+    var code = this.baseCode;
+    code = this.ReplaceDeclaration(code);
+    code = this.ReplaceInit(code);
+    code = this.ReplaceLoop(code);
+    code = this.ReplaceFunctions(code);
+    
+    var txtArea = document.createElement("pre");
+    txtArea.setAttribute("style", "max-height:70vh;overflow:scroll;background-color:white;text-align:left;overflow:auto;font-size:70%;");
+    var txtCode = document.createElement("code");
+    txtArea.addEventListener("click", function(){
+      var range = document.createRange();
+      range.selectNode(txtArea);
+      document.getSelection().empty();
+      document.getSelection().addRange(range);
+    });
+    txtCode.appendChild(document.createTextNode(code));
+    txtArea.appendChild(txtCode);
+    window.appendChild(txtArea);
+    
+    black.appendChild(window);
+    document.body.appendChild(black);
+    
+    if(hljs)
+      hljs.highlightBlock(txtArea);
+  }
+  
+  ReplaceDeclaration(original)
+  {
+    var decl = "";
+    
+    for(var k=0;k<LedStrips.Count();k++)
+    {
+      decl += "Strip strip_" + k + "(" + LedStrips.GetStrip(k).leds.length + ", ";
+        decl += LedStrips.GetStrip(k).pin + ", ";
+        decl += LedStrips.GetStrip(k).leds.length + " ";
+        decl += ");\n";
+    }
+    for(var k=0;k<LedStrips.Count();k++)
+    {
+      decl += LedStrips.GetStrip(k).GetArduinoLoops(k);
+    }
+    return original.replace(this.stripsDeclaration, decl);
+  }
+  
+  ReplaceGlobal(original)
+  {
+    var global = "";
+    
+  }
+  
+  ReplaceInit(original)
+  {
+    var global = "";
+    for(var k=0;k<LedStrips.Count();k++)
+    {
+      global += "  strip_" + k + ".strip.begin();\n";
+    }
+    return original.replace(this.stripsInit, global);
+    
+  }
+  
+  ReplaceLoop(original)
+  {
+    var loop = "";
+    for(var k=0;k<LedStrips.Count();k++)
+    {
+      loop += "  if(strip" + k + "_loop0() & 0x01)\n";
+      loop += "    strip_" + k + ".strip.show();\n";
+    }
+    return original.replace(this.stripsLoop, loop);
+  }
+  
+  ReplaceFunctions(original)
+  {
+    var functions = "";
+    
+    for(var k=0;k<LedStrips.Count();k++)
+    {
+      functions += LedStrips.GetStrip(k).GetArduinoCode(k);
+    }
+    
+    return original.replace(this.stripsFunctions, functions);
+  }
+};

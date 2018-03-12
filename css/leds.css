@@ -1,0 +1,27 @@
+
+.ledstrip
+{
+  width:100%;
+  display:block;
+  background-color: black;
+  border-style:solid;
+  border-color:black;
+  border-radius:2px;
+  border-width: 1px;
+}
+
+.ledstrip:hover
+{
+  background-color: #858500;
+}
+
+.pixelled
+{
+  display:inline-block;
+  max-width:3vw;
+  max-height:3vw;
+  background-image: radial-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5), rgba(255,255,255,0.1)), url(pixel.png);
+  background-size: cover, cover;
+  vertical-align:middle;
+}
+
