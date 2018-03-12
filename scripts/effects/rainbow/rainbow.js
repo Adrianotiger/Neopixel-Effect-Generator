@@ -6,7 +6,8 @@ class EffectRainbow extends Effect
   {
     super();
     this.name = "Rainbow";
-    this.toLeft = true;
+    this.options['length'] = 1;
+    this.options['toLeft'] = true;
   }
   
   static get Author() {return "Adriano Petrucci";}
@@ -19,18 +20,18 @@ class EffectRainbow extends Effect
     this.colors.push(new Pixel(0,0,255));
     
     this.delay = 20;
-    this.length = leds;
+    this.options['length'] = leds;
     this.steps = leds;
     
-    this.animationSettings.push(Form.CreateSwitchInput("Direction:", "left", "right", this.toLeft?"left":"right", function(val){
-      if(val==="left") this.toLeft = true;
-      else this.toLeft = false;
+    this.animationSettings.push(Form.CreateSwitchInput("Direction:", "left", "right", this.options['toLeft']?"left":"right", function(val){
+      if(val==="left") this.options['toLeft'] = true;
+      else this.options['toLeft'] = false;
     }.bind(this)));
     this.animationSettings.push(Form.CreateSliderInput("Steps (more steps = more fluid, but slower):", this.steps, leds, 1, -leds * 5, function(val){
       this.steps = val;
     }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Length (led qty=entire rainbow):", this.length, leds, 1, -leds * 5, function(val){
-      this.length = val;
+    this.animationSettings.push(Form.CreateSliderInput("Length (led qty=entire rainbow):", this.options['length'], leds, 1, -leds * 5, function(val){
+      this.options['length'] = val;
     }.bind(this)));
     this.animationSettings.push(Form.CreateSliderInput("Delay (time between steps):", this.delay, 5, 1, -100, function(val){
       this.delay = val;
@@ -94,10 +95,10 @@ class EffectRainbow extends Effect
     var pix = new Pixel(0,0,0);
     var substeps = this.steps / colors;
     var pos;
-    if(this.toLeft)
-      pos = this.step + led * this.steps / this.length;
+    if(this.options['toLeft'])
+      pos = this.step + led * this.steps / this.options['length'];
     else
-      pos = this.steps - (this.step - led * this.steps / this.length) % this.steps;
+      pos = this.steps - (this.step - led * this.steps / this.options['length']) % this.steps;
 
     for(var j=0;j<colors;j++)
     {
@@ -132,9 +133,9 @@ class EffectRainbow extends Effect
     
     code += "  if(millis() - " + s + ".effStart < " + this.delay + " * (" + s + ".effStep)) return 0x00;\n";
     code += "  float factor1, factor2;\n";
-    code += "  uint16_t ind;\n";// = " + (this.toLeft ? s + ".step + "this.step + led * this.steps / this.length : );
+    code += "  uint16_t ind;\n";// = " + (this.options['toLeft'] ? s + ".step + "this.step + led * this.steps / this.options['length'] : );
     code += "  for(uint16_t j=0;j<" + leds + ";j++) {\n";
-    code += "    ind = " + (this.toLeft ? s + ".effStep + j * " + (this.steps / this.length) : this.steps + " - (" + s + ".effStep - j * " + (this.steps / this.length) + ") % " + this.steps) + ";\n";
+    code += "    ind = " + (this.options['toLeft'] ? s + ".effStep + j * " + (this.steps / this.options['length']) : this.steps + " - (" + s + ".effStep - j * " + (this.steps / this.options['length']) + ") % " + this.steps) + ";\n";
     code += "    switch((ind % " + this.steps + ") / " + (this.steps / this.colors.length) + ") {\n";
     for(var k=0;k<this.colors.length;k++)
     {

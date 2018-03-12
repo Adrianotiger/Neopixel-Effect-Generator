@@ -1,5 +1,13 @@
-
 /* global LedStrip, Form */
+
+/*
+ * Effects and Effect classes
+ * Effects is a global class to manage the effects.
+ * Effect is the base class for generating the new effects
+ * 
+ * Author: Adriano
+ * Date: march 2018
+ */
 
 var Effects = new class
 {
@@ -89,10 +97,8 @@ var Effects = new class
     }.bind(this));
     var window = document.createElement("div");
     window.addEventListener("click", function(e){
-      e.preventDefault();
       e.stopPropagation();
-      var basePath = "https://github.com/Adrianotiger/Neopixel-Effect-Generator/tree/master/scripts/effects/";
-      window.open(basePath + this.effectsPath[effectid]);
+      document.body.removeChild(black);
     }.bind(this));
     window.className = "form_windowselect";
     
@@ -108,11 +114,12 @@ var Effects = new class
       effAuthor.appendChild(document.createTextNode("Author: " + this.effects[effectid].Author));
       window.appendChild(effAuthor);
       
-      var effWebPage = document.createElement("span");
-      effWebPage.appendChild(document.createTextNode(this.effectsPath[effectid]));
+      var effWebPage = document.createElement("a");
+      effWebPage.setAttribute("href", "https://github.com/Adrianotiger/Neopixel-Effect-Generator/tree/master/scripts/effects/" + this.effectsPath[effectid]);
+      effWebPage.setAttribute("target", "_blank");
+      effWebPage.setAttribute("style", "color:darkblue;");
+      effWebPage.appendChild(document.createTextNode("Open description on GitHub"));
       window.appendChild(effWebPage);
-      
-      console.log(this.effectsPath[effectid]);
           
     black.appendChild(window);
     document.body.appendChild(black);
@@ -135,6 +142,7 @@ class Effect
     
     this.animationSettings = [];
     this.colorSettings = [];
+    this.options = [];
     
     this.div = document.createElement("div");
     this.div.className = "effectdiv";

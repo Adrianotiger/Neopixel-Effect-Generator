@@ -18,7 +18,8 @@ class EffectFade extends Effect
     super();
     this.name = "Fade";   // give a name to this effect
       // Option variables. Every option must be declared here
-    this.duration = 100; 
+      // They are inside an array, so the values can be saved and loaded easly to/from a file
+    this.options['duration'] = 100; 
   }
   
   static get Author() {return "Adriano Petrucci";}
@@ -30,7 +31,7 @@ class EffectFade extends Effect
     this.colors.push(new Pixel(0,0,0));       // Color 1 (begin color)
     this.colors.push(new Pixel(255,255,255)); // Color 2 (end color)
     
-    this.delay = this.duration / 50;          // calculate the delay to have 50 steps
+    this.delay = this.options['duration'] / 50;          // calculate the delay to have 50 steps
         
     this.UpdateSteps();                       // calculate the steps to show this animation
         
@@ -42,19 +43,19 @@ class EffectFade extends Effect
         //   min value, 
         //   max value (negative to give the possibility to insert a bigger number manually)
         //   return function
-    this.animationSettings.push(Form.CreateSliderInput("Duration (ms):", this.duration, 1000, 100, -1000, function(val){
+    this.animationSettings.push(Form.CreateSliderInput("Duration (ms):", this.options['duration'], 1000, 100, -1000, function(val){
       if(val < this.delay) 
       {
         alert("Duration must be greater than the delay");
       }
       else
       {
-        this.duration = val;
+        this.options['duration'] = val;
         this.UpdateSteps();
       }
     }.bind(this)));
     this.animationSettings.push(Form.CreateSliderInput("Delay between steps (ms):", this.delay, 10, 1, -100, function(val){
-      if(val > this.duration) 
+      if(val > this.options['duration']) 
       {
         alert("Delay must be smaller than the duration");
       }
@@ -104,7 +105,7 @@ class EffectFade extends Effect
     // able to update so fast
   UpdateSteps()
   {
-    this.steps = this.duration / this.delay;
+    this.steps = this.options['duration'] / this.delay;
   }
 
     // Get the led color of the single led inside the led strip
@@ -112,7 +113,7 @@ class EffectFade extends Effect
   GetColor(led)
   {
     var pix = new Pixel(0,0,0);
-    var elapsed = Math.min(this.step, this.steps) * this.delay / this.duration;
+    var elapsed = Math.min(this.step, this.steps) * this.delay / this.options['duration'];
     
     pix.red = this.colors[1].red * elapsed + this.colors[0].red * (1.0 - elapsed);
     pix.green = this.colors[1].green * elapsed + this.colors[0].green * (1.0 - elapsed);
@@ -129,7 +130,7 @@ class EffectFade extends Effect
     
     code += "  if(millis() - " + s + ".effStart < " + this.delay + " * (" + s + ".effStep)) return 0x00;\n";
     code += "  uint8_t e,r,g,b;\n";
-    code += "    e = (" + s + ".effStep * " + this.delay + ") / " + this.duration + ";\n";
+    code += "    e = (" + s + ".effStep * " + this.delay + ") / " + this.options['duration'] + ";\n";
     code += "    r = " + this.colors[1].red + " * ( e ) + " + this.colors[0].red + " * ( 1.0 - e );\n";
     code += "    g = " + this.colors[1].green + " * ( e ) + " + this.colors[0].green + " * ( 1.0 - e );\n";
     code += "    b = " + this.colors[1].blue + " * ( e ) + " + this.colors[0].blue + " * ( 1.0 - e );\n";

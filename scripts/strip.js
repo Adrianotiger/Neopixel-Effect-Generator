@@ -1,4 +1,13 @@
 /* global Form, ledstrips */
+/*
+ * LedStrips, LedStrip and Pixel classes
+ * LedStrips is a global class to manage the led strips.
+ * LedStrip is a class for the single led strips for the Arduino
+ * Pixel is a helper class to set the color of each led inside the strip
+ * 
+ * Author: Adriano
+ * Date: march 2018
+ */
 
 var LedStrips = new class
 {
@@ -193,7 +202,7 @@ class LedStrip
       r1 = r * a;
       g1 = g * a;
       b1 = b * a;
-      this.div.childNodes[j].style.backgroundImage = "radial-gradient(rgba("+r1+","+g1+","+b1+",1.0), rgba("+r+","+g+","+b+","+(a*0.8)+"), rgba("+r+","+g+","+b+","+(a*0.1)+")), url(pixel.png)";
+      this.div.childNodes[j].style.backgroundImage = "radial-gradient(rgba("+r1+","+g1+","+b1+",1.0), rgba("+r+","+g+","+b+","+(a*0.8)+"), rgba("+r+","+g+","+b+","+(a*0.1)+")), url(css/pixel.png)";
     }
   }
   
