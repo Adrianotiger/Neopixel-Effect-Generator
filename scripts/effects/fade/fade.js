@@ -19,7 +19,8 @@ class EffectFade extends Effect
     this.name = "Fade";   // give a name to this effect
       // Option variables. Every option must be declared here
       // They are inside an array, so the values can be saved and loaded easly to/from a file
-    this.options['duration'] = 100; 
+    this.options['duration'] = 100;   // duration of the entire animation
+    this.options['every'] = 1;        // only every X leds will animate
   }
   
   static get Author() {return "Adriano Petrucci";}
@@ -45,9 +46,7 @@ class EffectFade extends Effect
         //   return function
     this.animationSettings.push(Form.CreateSliderInput("Duration (ms):", this.options['duration'], 1000, 100, -1000, function(val){
       if(val < this.delay) 
-      {
         alert("Duration must be greater than the delay");
-      }
       else
       {
         this.options['duration'] = val;
@@ -56,14 +55,16 @@ class EffectFade extends Effect
     }.bind(this)));
     this.animationSettings.push(Form.CreateSliderInput("Delay between steps (ms):", this.delay, 10, 1, -100, function(val){
       if(val > this.options['duration']) 
-      {
         alert("Delay must be smaller than the duration");
-      }
       else
       {
-        this.timeToOn = val;
+        this.delay = val;
         this.UpdateSteps();
       }
+    }.bind(this)));
+    this.animationSettings.push(Form.CreateSliderInput("Every (led):", this.options['every'], 1, 1, leds, function(val){
+      this.options['every'] = val;
+      this.UpdateSteps();
     }.bind(this)));
 
       // fill colors array, only 2 for start and end color
@@ -92,9 +93,9 @@ class EffectFade extends Effect
     // parameter: ledStrip to update
   NextStep(ledStrip)
   {
-    var pix1 = this.GetColor(0);
     for(var l=0;l<ledStrip.leds.length;l++)
     {
+      var pix1 = this.GetColor(l);
       ledStrip.leds[l].SetColor(pix1.red, pix1.green, pix1.blue);
     }
     super.NextStep(ledStrip);
@@ -112,9 +113,9 @@ class EffectFade extends Effect
     // parameter: led id (0 to strip leds - 1)
   GetColor(led)
   {
-    var pix = new Pixel(0,0,0);
+    var pix = new Pixel(this.colors[0].red,this.colors[0].green,this.colors[0].blue);
+    if((led % this.options['every']) !== 0) return pix;
     var elapsed = Math.min(this.step, this.steps) * this.delay / this.options['duration'];
-    
     pix.red = this.colors[1].red * elapsed + this.colors[0].red * (1.0 - elapsed);
     pix.green = this.colors[1].green * elapsed + this.colors[0].green * (1.0 - elapsed);
     pix.blue = this.colors[1].blue * elapsed + this.colors[0].blue * (1.0 - elapsed);
@@ -134,8 +135,12 @@ class EffectFade extends Effect
     code += "    r = " + this.colors[1].red + " * ( e ) + " + this.colors[0].red + " * ( 1.0 - e );\n";
     code += "    g = " + this.colors[1].green + " * ( e ) + " + this.colors[0].green + " * ( 1.0 - e );\n";
     code += "    b = " + this.colors[1].blue + " * ( e ) + " + this.colors[0].blue + " * ( 1.0 - e );\n";
-    code += "    for(uint16_t j=0;j<" + leds + ";j++) \n";
-    code += "      " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "    for(uint16_t j=0;j<" + leds + ";j++) {\n";
+    code += "      if((j % " + this.options['every'] + ") == 0)\n";
+    code += "        " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "      else\n";
+    code += "        " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
+    code += "    }\n";
     code += "  }\n";
     code += "  if(" + s + ".effStep >= " + (this.steps) + ") {" + s + ".Reset(); return 0x03; }\n";
     code += "  else " + s + ".effStep++;\n";

@@ -12,6 +12,7 @@ class EffectBlink extends Effect
     this.options['timeOn'] = 1;
     this.options['timeToOff'] = 5;
     this.options['timeOver'] = 0;
+    this.options['every'] = 1;
   }
   
   static get Author() {return "Adriano Petrucci";}
@@ -22,13 +23,14 @@ class EffectBlink extends Effect
     this.colors.push(new Pixel(0,0,0));
     this.colors.push(new Pixel(255,255,255));
     
-    this.delay = 2;
+    this.delay = 5;
     
-    this.options['timeBegin'] = 100;
-    this.options['timeToOn'] = 2;
-    this.options['timeOn'] = 2;
-    this.options['timeToOff'] = 20;
+    this.options['timeBegin'] = 50;
+    this.options['timeToOn'] = 10;
+    this.options['timeOn'] = 10;
+    this.options['timeToOff'] = 10;
     this.options['timeOver'] = 100;
+    this.options['every'] = 1;
     
     this.UpdateSteps();
     this.options['length'] = leds;
@@ -51,6 +53,10 @@ class EffectBlink extends Effect
     }.bind(this)));
     this.animationSettings.push(Form.CreateSliderInput("Delay after blink (ms):", this.options['timeOver'], 100, 1, -1000, function(val){
       this.options['timeOver'] = val;
+      this.UpdateSteps();
+    }.bind(this)));
+    this.animationSettings.push(Form.CreateSliderInput("Blink every (leds):", this.options['every'], 1, 1, leds / 2, function(val){
+      this.options['every'] = val;
       this.UpdateSteps();
     }.bind(this)));
     this.animationSettings.push(Form.CreateSliderInput("Delay (time between steps):", this.delay, 2, 1, 100, function(val){
@@ -78,9 +84,10 @@ class EffectBlink extends Effect
   
   NextStep(ledStrip)
   {
-    var pix1 = this.GetColor(0);
+    var pix1;
     for(var l=0;l<ledStrip.leds.length;l++)
     {
+      pix1 = this.GetColor(l);
       ledStrip.leds[l].SetColor(pix1.red, pix1.green, pix1.blue);
     }
     super.NextStep(ledStrip);
@@ -95,7 +102,7 @@ class EffectBlink extends Effect
   {
     var pix = new Pixel(0,0,0);
     var elapsed = (this.step % this.steps) * this.delay;
-    if(elapsed < this.options['timeBegin'])
+    if(elapsed < this.options['timeBegin'] || (led % this.options['every']) !== 0)
     {
       pix.red = this.colors[0].red;
       pix.green = this.colors[0].green;
@@ -150,14 +157,16 @@ class EffectBlink extends Effect
     code += "    g = " + this.colors[1].green + " * ( e / " + this.options['timeToOn'] + " ) + " + this.colors[0].green + " * ( 1.0 - e / " + this.options['timeToOn'] + " );\n";
     code += "    b = " + this.colors[1].blue + " * ( e / " + this.options['timeToOn'] + " ) + " + this.colors[0].blue + " * ( 1.0 - e / " + this.options['timeToOn'] + " );\n";
     code += "    for(uint16_t j=0;j<" + leds + ";j++) \n";
-    code += "      " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "      if((j%" + this.options['every'] + ")==0) " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "      else " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
     code += "  }\n";
     code += "  else if(" + s + ".effStep < " + ((this.options['timeBegin'] + this.options['timeToOn'] + this.options['timeOn']) / this.delay) + ") {\n";
     code += "    for(uint16_t j=0;j<" + leds + ";j++) \n";
-    code += "      " + s + ".strip.setPixelColor(j, ";
+    code += "      if((j%" + this.options['every'] + ")==0) " + s + ".strip.setPixelColor(j, ";
       code += this.colors[1].red + ", ";
       code += this.colors[1].green + ", ";
       code += this.colors[1].blue + ");\n";
+      code += "      else " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
     code += "  }\n";
     code += "  else if(" + s + ".effStep < " + ((this.options['timeBegin'] + this.options['timeToOn'] + this.options['timeOn'] + this.options['timeToOff']) / this.delay) + ") {\n";
     code += "    e = (" + s + ".effStep * " + this.delay + ") - " + (this.options['timeBegin'] + this.options['timeToOn'] + this.options['timeOn']) + ";\n";
@@ -165,7 +174,8 @@ class EffectBlink extends Effect
     code += "    g = " + this.colors[0].green + " * ( e / " + this.options['timeToOff'] + " ) + " + this.colors[1].green + " * ( 1.0 - e / " + this.options['timeToOff'] + " );\n";
     code += "    b = " + this.colors[0].blue + " * ( e / " + this.options['timeToOff'] + " ) + " + this.colors[1].blue + " * ( 1.0 - e / " + this.options['timeToOff'] + " );\n";
     code += "    for(uint16_t j=0;j<" + leds + ";j++) \n";
-    code += "      " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "      if((j%" + this.options['every'] + ")==0) " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "      else " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
     code += "  }\n";
     code += "  else {\n";
     code += "    for(uint16_t j=0;j<" + leds + ";j++) \n";
