@@ -19,7 +19,7 @@ var Effects = new class
   {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
-    xobj.open('GET', 'html/scripts/effects/effects.json', true);
+    xobj.open('GET', 'scripts/effects/effects.json', true);
     xobj.onreadystatechange = function () {
       if (xobj.readyState === 4 && xobj.status === 200) {
         var json = JSON.parse(xobj.response);
@@ -42,7 +42,7 @@ var Effects = new class
       this.effectsPath.push(path.substr(0, path.lastIndexOf("/")));
       console.log("Loading " + classname + ", ver." + className.Version + " from " + className.Author);
     }.bind(this);
-    script.setAttribute("src", "html/scripts/effects/" + path);
+    script.setAttribute("src", "scripts/effects/" + path);
     document.head.appendChild(script);
   }
       
@@ -91,6 +91,8 @@ var Effects = new class
     window.addEventListener("click", function(e){
       e.preventDefault();
       e.stopPropagation();
+      var basePath = "https://github.com/Adrianotiger/Neopixel-Effect-Generator/tree/master/scripts/effects/";
+      window.open(basePath + this.effectsPath[effectid]);
     }.bind(this));
     window.className = "form_windowselect";
     
@@ -111,11 +113,7 @@ var Effects = new class
       window.appendChild(effWebPage);
       
       console.log(this.effectsPath[effectid]);
-      
-      
-      //var f = function(id, loop){return function(){document.body.removeChild(black); loop.AddEffect(id);};};
-      
-    
+          
     black.appendChild(window);
     document.body.appendChild(black);
     
