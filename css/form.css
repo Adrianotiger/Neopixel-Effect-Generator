@@ -59,7 +59,25 @@ a:hover
   vertical-align: middle;
 }
 
-.formbutton_remove
+.formbutton_removeloop
+{
+  font-size:80%;
+  color:#550000;
+  border-color:#888833;
+  border-style:solid;
+  border-width:1px;
+  display:inline-block;
+  position:absolute;
+  left:0px;
+  bottom:0px;
+  background-color:#ffa0a0;
+  border-radius:8px;
+  cursor:pointer;
+  padding:2px;
+  margin-left:5px;
+}
+
+.formbutton_removeeffect
 {
   font-size:80%;
   color:#550000;

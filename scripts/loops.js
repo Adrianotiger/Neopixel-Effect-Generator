@@ -52,7 +52,7 @@ class Loop
     {
       this.ledStrip = parent.ledStrip;
       var delLoop = document.createElement("b");
-      delLoop.className = "formbutton_remove";
+      delLoop.className = "formbutton_removeloop";
       delLoop.appendChild(document.createTextNode("- Remove Loop"));
       delLoop.addEventListener("click", function(){
         if(this.childs.length > 0)
@@ -108,7 +108,7 @@ class Loop
     var effect = Effects.NewEffect(effectid);
     effect.Init(this.ledStrip.leds.length);
     var delEffect = document.createElement("b");
-    delEffect.className = "formbutton_remove";
+    delEffect.className = "formbutton_removeeffect";
     delEffect.appendChild(document.createTextNode("- Remove"));
     delEffect.addEventListener("click", function(){
       this.RemoveInnerEffect(this, effect);
