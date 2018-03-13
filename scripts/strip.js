@@ -16,6 +16,8 @@ var LedStrips = new class
     this.ledstrips = [];
     this.strips = 0;
     this.selected = null;
+    this.currentUsed = 0;
+    this.maxCurrent = 0;
   }
   
   Count()
@@ -73,10 +75,14 @@ var LedStrips = new class
   
   Loop()
   {
+    this.currentUsed = 0;
     for(var s=0;s<this.Count();s++)
     {
       this.ledstrips[s].Loop();
+      this.currentUsed += this.ledstrips[s].current;
     }
+    if(this.currentUsed > this.maxCurrent) this.maxCurrent = this.currentUsed;
+    document.getElementById('info_current').innerHTML = (parseInt(this.currentUsed / 10) / 100) + "A (max:" + (parseInt(this.maxCurrent / 100) / 10) + "A)";
   }
   
   Remove(ledStrip)
@@ -109,6 +115,7 @@ class LedStrip
     this.pin = pin;
     this.loop = new Loop(this);
     this.leds = [];
+    this.current = 0;
     this.div = document.createElement("div");
     this.div.className = "ledstrip";
     for(var j=0;j<leds;j++)
@@ -191,12 +198,14 @@ class LedStrip
   Show()
   {
     var r,g,b,a,r1,g1,b1,norm;
+    this.current = 0;
     for(var j=0;j<this.leds.length;j++)
     {
       r = this.leds[j].red;
       g = this.leds[j].green;
       b = this.leds[j].blue;
       norm = r+g+b+1;
+      this.current += (norm / 15);
       a = Math.min(1.0, norm / 350.0);
 
       r1 = r * a;

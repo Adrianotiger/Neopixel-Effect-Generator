@@ -171,10 +171,13 @@ class Effect
     tr.appendChild(td);
     td = document.createElement("td");
     td.setAttribute("style", "color:yellow;text-decoration:underline;cursor:pointer;");
-    td.appendChild(document.createTextNode("Colors"));
-    td.addEventListener("click", function(){
-      this.OpenColorSettings();
-    }.bind(this));
+    if(this.colorSettings.length > 0)
+    {
+      td.appendChild(document.createTextNode("Colors"));
+      td.addEventListener("click", function(){
+        this.OpenColorSettings();
+      }.bind(this));
+    }
     tr.appendChild(td);
     this.table.appendChild(tr);
     document.getElementById("ledeffectsdiv").appendChild(this.table);

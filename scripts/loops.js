@@ -59,7 +59,7 @@ class Loop
         {
           alert("Please remove loops and effects inside this loop before");
         }
-        else if(confirm("Do you want remove this loop?"))
+        else
         {
           this.parent.RemoveInnerLoop(this);
         }

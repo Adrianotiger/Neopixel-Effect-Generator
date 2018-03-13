@@ -1,5 +1,6 @@
 [
   {"name" : "Rainbow" , "class" : "EffectRainbow",  "path" : "rainbow/rainbow.js"},
   {"name" : "Blink"   , "class" : "EffectBlink",    "path" : "blink/blink.js"},
-  {"name" : "Fade"    , "class" : "EffectFade",     "path" : "fade/fade.js"}
+  {"name" : "Fade"    , "class" : "EffectFade",     "path" : "fade/fade.js"},
+  {"name" : "Move"    , "class" : "EffectMove",     "path" : "move/move.js"}
 ]

@@ -32,7 +32,7 @@ class EffectFade extends Effect
     this.colors.push(new Pixel(0,0,0));       // Color 1 (begin color)
     this.colors.push(new Pixel(255,255,255)); // Color 2 (end color)
     
-    this.delay = this.options['duration'] / 50;          // calculate the delay to have 50 steps
+    this.delay = this.options['duration'] / 20;          // calculate the delay to have 20 steps
         
     this.UpdateSteps();                       // calculate the steps to show this animation
         
@@ -95,6 +95,7 @@ class EffectFade extends Effect
   {
     for(var l=0;l<ledStrip.leds.length;l++)
     {
+      if((l % this.options['every']) !== 0) continue;
       var pix1 = this.GetColor(l);
       ledStrip.leds[l].SetColor(pix1.red, pix1.green, pix1.blue);
     }
@@ -114,7 +115,6 @@ class EffectFade extends Effect
   GetColor(led)
   {
     var pix = new Pixel(this.colors[0].red,this.colors[0].green,this.colors[0].blue);
-    if((led % this.options['every']) !== 0) return pix;
     var elapsed = Math.min(this.step, this.steps) * this.delay / this.options['duration'];
     pix.red = this.colors[1].red * elapsed + this.colors[0].red * (1.0 - elapsed);
     pix.green = this.colors[1].green * elapsed + this.colors[0].green * (1.0 - elapsed);
@@ -137,7 +137,7 @@ class EffectFade extends Effect
     code += "    b = " + this.colors[1].blue + " * ( e ) + " + this.colors[0].blue + " * ( 1.0 - e );\n";
     code += "    for(uint16_t j=0;j<" + leds + ";j++) {\n";
     code += "      if((j % " + this.options['every'] + ") == 0)\n";
-    code += "        " + s + ".strip.setPixelColor(j, r, g, b);\n";
+    code += "        /*" + s + ".strip.setPixelColor(j, r, g, b)*/;\n";
     code += "      else\n";
     code += "        " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
     code += "    }\n";
