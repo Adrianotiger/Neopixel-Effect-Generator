@@ -130,17 +130,17 @@ class EffectFade extends Effect
     var code = super.GetArduinoCode(stripid, effectname, leds);
     
     code += "  if(millis() - " + s + ".effStart < " + this.delay + " * (" + s + ".effStep)) return 0x00;\n";
-    code += "  uint8_t e,r,g,b;\n";
-    code += "    e = (" + s + ".effStep * " + this.delay + ") / " + this.options['duration'] + ";\n";
-    code += "    r = " + this.colors[1].red + " * ( e ) + " + this.colors[0].red + " * ( 1.0 - e );\n";
-    code += "    g = " + this.colors[1].green + " * ( e ) + " + this.colors[0].green + " * ( 1.0 - e );\n";
-    code += "    b = " + this.colors[1].blue + " * ( e ) + " + this.colors[0].blue + " * ( 1.0 - e );\n";
-    code += "    for(uint16_t j=0;j<" + leds + ";j++) {\n";
-    code += "      if((j % " + this.options['every'] + ") == 0)\n";
-    code += "        /*" + s + ".strip.setPixelColor(j, r, g, b)*/;\n";
-    code += "      else\n";
-    code += "        " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
-    code += "    }\n";
+    code += "  uint8_t r,g,b;\n";
+    code += "  double e;\n";
+    code += "  e = (" + s + ".effStep * " + this.delay + ") / " + this.options['duration'] + ";\n";
+    code += "  r = " + this.colors[1].red + " * ( e ) + " + this.colors[0].red + " * ( 1.0 - e );\n";
+    code += "  g = " + this.colors[1].green + " * ( e ) + " + this.colors[0].green + " * ( 1.0 - e );\n";
+    code += "  b = " + this.colors[1].blue + " * ( e ) + " + this.colors[0].blue + " * ( 1.0 - e );\n";
+    code += "  for(uint16_t j=0;j<" + leds + ";j++) {\n";
+    code += "    if((j % " + this.options['every'] + ") == 0)\n";
+    code += "      " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
+    code += "    else\n";
+    code += "      " + s + ".strip.setPixelColor(j, 0, 0, 0);\n";
     code += "  }\n";
     code += "  if(" + s + ".effStep >= " + (this.steps) + ") {" + s + ".Reset(); return 0x03; }\n";
     code += "  else " + s + ".effStep++;\n";

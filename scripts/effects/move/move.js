@@ -107,7 +107,7 @@ class EffectMove extends Effect
     }
     if(this.options['toLeft'])
     {
-      code += "  for(uint16_t j=0;j<" + leds + "-1;j++) \n";
+      code += "  for(uint16_t j=0;j<" + (leds-1) + ";j++) \n";
       code += "    " + s + ".strip.setPixelColor(j, " + s + ".strip.getPixelColor(j+1)); \n";
     }
     else
@@ -118,9 +118,9 @@ class EffectMove extends Effect
     if(this.options['rotate'])
     {
       if(this.options['toLeft'])
-        code += "    " + s + ".strip.setPixelColor(" + leds + "-1, c); \n";
+        code += "  " + s + ".strip.setPixelColor(" + (leds-1) + ", c); \n";
       else
-        code += "    " + s + ".strip.setPixelColor(0, c); \n";
+        code += "  " + s + ".strip.setPixelColor(0, c); \n";
     }
     code += "  if(" + s + ".effStep >= " + (this.steps) + ") {" + s + ".Reset(); return 0x03; }\n";
     code += "  else " + s + ".effStep++;\n";
