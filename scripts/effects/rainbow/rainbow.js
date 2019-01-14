@@ -136,11 +136,11 @@ class EffectRainbow extends Effect
     code += "  uint16_t ind;\n";// = " + (this.options['toLeft'] ? s + ".step + "this.step + led * this.steps / this.options['length'] : );
     code += "  for(uint16_t j=0;j<" + leds + ";j++) {\n";
     code += "    ind = " + (this.options['toLeft'] ? s + ".effStep + j * " + (this.steps / this.options['length']) : this.steps + " - (" + s + ".effStep - j * " + (this.steps / this.options['length']) + ") % " + this.steps) + ";\n";
-    code += "    switch((ind % " + this.steps + ") / " + (this.steps / this.colors.length) + ") {\n";
+    code += "    switch((int)((ind % " + this.steps + ") / " + (this.steps / this.colors.length) + ")) {\n";
     for(var k=0;k<this.colors.length;k++)
     {
       code += "      case " + k + ": factor1 = 1.0 - ((float)(ind % " + this.steps + " - " + k + " * " + (this.steps / this.colors.length) + ") / " + (this.steps / this.colors.length) +");\n";
-      code += "              factor2 = (float)((ind - " + (k * (this.steps / this.colors.length)) + ") % " + this.steps + ") / " + (this.steps / this.colors.length) + ";\n";
+      code += "              factor2 = (float)((int)(ind - " + (k * (this.steps / this.colors.length)) + ") % " + this.steps + ") / " + (this.steps / this.colors.length) + ";\n";
       code += "              " + s + ".strip.setPixelColor(j, ";
         code += this.colors[k].red + " * factor1 + " + this.colors[(k+1)%this.colors.length].red + " * factor2, ";
         code += this.colors[k].green + " * factor1 + " + this.colors[(k+1)%this.colors.length].green + " * factor2, ";
