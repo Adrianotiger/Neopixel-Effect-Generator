@@ -5,6 +5,7 @@ With this editor, you can create some effects for your led strips. It is easy an
 
 # Try it
 Open this link https://adrianotiger.github.io/Neopixel-Effect-Generator/ and begin to "draw" your animation.
+![screenshot](https://github.com/Adrianotiger/Neopixel-Effect-Generator/raw/master/doc/screenshot.jpg)
 
 ## How to use the webpage?
 Open the webpage and add a strip. Select the pin and led quantity. At this point you will be able to add effects to your strip dinamically. At the end press the "Generatre Arduino Code" to get the code for your Arduino.
