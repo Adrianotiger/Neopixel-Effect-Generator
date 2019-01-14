@@ -41,7 +41,7 @@ var LedStrips = new class
     this.ledstrips.push(ledStrip);
     this.strips++;
     this.SelectStrip(ledStrip);
-    ledStrip.ShowOptions();
+    //ledStrip.ShowOptions();
     return ledStrip;
   }
   

@@ -211,7 +211,22 @@ class Effect
   UpdateSteps()  {}
   GetArduinoCode(stripid, effectname, leds) 
   {
-    return "uint8_t strip" + stripid + "_" + effectname + "() {\n";
+    var sRet = "uint8_t strip" + stripid + "_" + effectname + "() {\n";
+    sRet += "    // Strip ID: " + stripid + " - Effect: " + this.name + " - LEDS: " + leds + "\n";
+    sRet += "    // Steps: " + this.steps + " - Delay: " + this.delay + "\n";
+    sRet += "    // Colors: " + this.colors.length + " (";
+    for(var j=0;j<this.colors.length;j++)
+    {
+      sRet += this.colors[j].red + "." + this.colors[j].green + "." + this.colors[j].blue + ", ";
+    }
+    sRet += ")\n";
+    sRet += "    // Options: ";
+    for(var o in this.options)
+    {
+      sRet += o + "=" + this.options[o] + ", ";
+    }
+    sRet += "\n";
+    return  sRet;
   }
   
 }

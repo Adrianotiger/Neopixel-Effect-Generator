@@ -1,5 +1,8 @@
 /* global Form, Effects */
 
+// Version 1.1
+// - Compile errors, when rainbow had a different length than the led strip length
+
 class EffectRainbow extends Effect
 {  
   constructor()
@@ -11,7 +14,7 @@ class EffectRainbow extends Effect
   }
   
   static get Author() {return "Adriano Petrucci";}
-  static get Version() {return "1.0";}
+  static get Version() {return "1.1";}
     
   Init(leds)
   {
@@ -130,7 +133,7 @@ class EffectRainbow extends Effect
   {
     var s = "strip_" + stripid;
     var code = super.GetArduinoCode(stripid, effectname, leds);
-    
+        
     code += "  if(millis() - " + s + ".effStart < " + this.delay + " * (" + s + ".effStep)) return 0x00;\n";
     code += "  float factor1, factor2;\n";
     code += "  uint16_t ind;\n";// = " + (this.options['toLeft'] ? s + ".step + "this.step + led * this.steps / this.options['length'] : );
