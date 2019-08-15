@@ -25,9 +25,9 @@
     <script>
       var interval = null;
             
-      function addLedStrip()
+      function addLedStrip(ledStrip)
       {
-        var ledStrip = LedStrips.AddLedStrip();
+        if(!ledStrip || typeof ledStrip === 'undefined') ledStrip = LedStrips.AddLedStrip();
         
         document.getElementById("ledstripsdiv").appendChild(ledStrip.GetDiv());
         document.getElementById("ledeffectsdiv").style.paddingTop = parseInt(document.getElementById("ledeffectsdiv").style.paddingTop) + 30 + "px";
@@ -64,7 +64,7 @@
         <a href="https://github.com/Adrianotiger/Neopixel-Effect-Generator">https://github.com/Adrianotiger/Neopixel-Effect-Generator</a><br><br>
         Want to discuss about this led strip project? Post your question on the Ardiuno forum:<br>
         <a href="https://forum.arduino.cc/index.php?topic=534060.0">https://forum.arduino.cc/index.php?topic=534060.0</a><br><br>
-        &copy; 2018-2019 - Adriano
+        Version 2.0 <br> &copy; 2018-2019 - Adriano
       </div>
     </div>
     

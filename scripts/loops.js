@@ -128,6 +128,7 @@ class Loop
     this.div.appendChild(document.createElement("br"));
     
     this.currentChild = this.childs.length - 1;
+    return effect;
   }
   
   NextStep()
