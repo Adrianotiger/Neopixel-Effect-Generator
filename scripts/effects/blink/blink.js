@@ -1,5 +1,10 @@
 /* global Form, Effects */
 
+// Version 1.1
+// - updated for Generator 2.0
+// 
+// Every effect extends the Effect class.
+// This will give some base functionality
 class EffectBlink extends Effect
 {  
   constructor()
@@ -16,7 +21,7 @@ class EffectBlink extends Effect
   }
   
   static get Author() {return "Adriano Petrucci";}
-  static get Version() {return "1.0";}
+  static get Version() {return "1.1";}
   
   Init(leds)
   {
@@ -35,38 +40,65 @@ class EffectBlink extends Effect
     this.UpdateSteps();
     this.options['length'] = leds;
         
-    this.animationSettings.push(Form.CreateSliderInput("Delay before blink (ms):", this.options['timeBegin'], 100, 1, -1000, function(val){
-      this.options['timeBegin'] = val;
-      this.UpdateSteps();
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay for max intensity (ms):", this.options['timeToOn'], 2, 1, -100, function(val){
-      this.options['timeToOn'] = val;
-      this.UpdateSteps();
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay for On (ms):", this.options['timeOn'], 2, 1, -100, function(val){
-      this.options['timeOn'] = val;
-      this.UpdateSteps();
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay for min intensity (ms):", this.options['timeToOff'], 20, 1, -100, function(val){
-      this.options['timeToOff'] = val;
-      this.UpdateSteps();
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay after blink (ms):", this.options['timeOver'], 100, 1, -1000, function(val){
-      this.options['timeOver'] = val;
-      this.UpdateSteps();
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Blink every (leds):", this.options['every'], 1, 1, leds / 2, function(val){
-      this.options['every'] = val;
-      this.UpdateSteps();
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay (time between steps):", this.delay, 2, 1, 100, function(val){
-      this.delay = val;
-      this.UpdateSteps();
-    }.bind(this)));
-
-    this.colorSettings.push(Form.CreateColorInput("Base Color :", this.colors[0].red, this.colors[0].green, this.colors[0].blue, this.CreateFunc(0, this)));
-    this.colorSettings.push(Form.CreateColorInput("Blink Color :", this.colors[1].red, this.colors[1].green, this.colors[1].blue, this.CreateFunc(1, this)));
-
+    this.animationSettings.push(
+      {type:'slider', title:'Delay before blink (ms):', options:[1, 100, -1000], value:()=>{return this.options['timeBegin'];}, update:(val)=>{
+          this.options['timeBegin'] = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay for max intensity (ms):', options:[1, 2, -100], value:()=>{return this.options['timeToOn'];}, update:(val)=>{
+          this.options['timeToOn'] = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay for On (ms):', options:[1, 2, -100], value:()=>{return this.options['timeOn'];}, update:(val)=>{
+          this.options['timeOn'] = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay for min intensity (ms):', options:[1, 20, -100], value:()=>{return this.options['timeToOff'];}, update:(val)=>{
+          this.options['timeToOff'] = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay after blink (ms):', options:[1, 100, -1000], value:()=>{return this.options['timeOver'];}, update:(val)=>{
+          this.options['timeOver'] = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Blink every (ms):', options:[1, 1, leds / 2], value:()=>{return this.options['every'];}, update:(val)=>{
+          this.options['every'] = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay (time between steps):', options:[1, 2, 100], value:()=>{return this.delay;}, update:(val)=>{
+          this.delay = val;
+          this.UpdateSteps();
+        }
+      }
+    );
+    this.colorSettings.push(
+      {
+        type:'color', title:'Base Color:', color:()=>{return new Pixel(this.colors[0].red, this.colors[0].green, this.colors[0].blue, this.colors[0].white);}, update:this.CreateFunc(0, this)
+      }
+    );
+    this.colorSettings.push(
+      {
+        type:'color', title:'Blink Color:', color:()=>{return new Pixel(this.colors[1].red, this.colors[1].green, this.colors[1].blue, this.colors[1].white);}, update:this.CreateFunc(1, this)
+      }
+    );
     super.Init(leds);
   }
 

@@ -1,5 +1,8 @@
 /* global Form, Effects */
 
+// Version 1.1
+// - updated for Generator 2.0
+// 
 // Every effect extends the Effect class.
 // This will give some base functionality
 class EffectMove extends Effect
@@ -24,7 +27,7 @@ class EffectMove extends Effect
   }
   
   static get Author() {return "Adriano Petrucci";}
-  static get Version() {return "1.0";}
+  static get Version() {return "1.1";}
   
     // Init class, parameters: number of leds (if you need to know how many leds the strip has)
   Init(leds)
@@ -40,19 +43,32 @@ class EffectMove extends Effect
         //   min value, 
         //   max value (negative to give the possibility to insert a bigger number manually)
         //   return function
-    this.animationSettings.push(Form.CreateSwitchInput("Direction:", "left", "right", this.options['toLeft']?"left":"right", function(val){
-      this.options['toLeft'] = (val === "left");
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSwitchInput("Rotate:", "yes", "no", this.options['rotate']?"yes":"no", function(val){
-      this.options['rotate'] = (val === "yes");
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Steps for effect:", this.steps, leds, 1, leds, function(val){
-      this.steps = val;
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay between steps (ms):", this.delay, 10, 1, -100, function(val){
-      this.delay = val;
-    }.bind(this)));
-      
+    this.animationSettings.push(
+      {
+        type:'switch', title:'Direction: ', options:['left','right'], value:()=>{return this.options['toLeft']?"left":"right";}, update:(val)=>{
+          this.options['toLeft'] = (val === "left");
+        }
+      }
+    );
+    this.animationSettings.push(
+      {
+        type:'switch', title:'Rotate: ', options:['yes','no'], value:()=>{return this.options['rotate']?"yes":"no";}, update:(val)=>{
+          this.options['rotate'] = (val === "yes");
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Steps for effect:', options:[1, leds, leds], value:()=>{return this.steps;}, update:(val)=>{
+         this.steps = val;
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay between steps (ms):', options:[1, 10, -100], value:()=>{return this.delay;}, update:(val)=>{
+         this.delay = val;
+        }
+      }
+    );
     super.Init(leds);
   }
   

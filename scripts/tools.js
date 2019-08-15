@@ -8,7 +8,118 @@ var Tools = new class
   
   ImportCode()
   {
-    alert("This is not implemented yet. Coming soon...");
+    var black = document.createElement("div");
+    black.className = "formoverlayblack";
+    black.addEventListener("click", function(){
+      document.body.removeChild(black);
+    }.bind(this));
+    var window = document.createElement("div");
+    window.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+    }.bind(this));
+    window.className = "formwindow";
+    var h2 = document.createElement("h2");
+    h2.appendChild(document.createTextNode("Import script"));
+    window.appendChild(h2);
+    
+    var code = "Put your json with inside this box and load it.";
+    
+    var txtArea = document.createElement("textarea");
+    txtArea.setAttribute("style", "width:90%;min-height:30vh;max-height:70vh;overflow:scroll;background-color:white;text-align:left;overflow:auto;");
+    txtArea.setAttribute("placeholder", code);
+    window.appendChild(txtArea);
+    
+    window.appendChild(document.createElement("br"));
+    
+    var loadScript = document.createElement("button");
+    loadScript.appendChild(document.createTextNode("IMPORT"));
+    window.appendChild(loadScript);
+    loadScript.addEventListener("click", ()=>{
+      this._importCode(black, txtArea.value);
+    });
+    black.appendChild(window);
+    document.body.appendChild(black);
+  }
+  
+  _importCode(div, txt)
+  {
+    var json = "";
+    try
+    {
+      json = JSON.parse(txt);
+    }
+    catch(e)
+    {
+      alert("Error parsing json: \n" + e + "\n");
+      return;
+    }
+    document.body.removeChild(div);
+    console.log(json);
+    if(json.NeoPixelEffects && json.NeoPixelEffects.strips)
+    {
+      while(LedStrips.GetStrips().length > 0)
+        LedStrips.Remove(LedStrips.GetStrips()[0]);
+      
+      for(var s in json.NeoPixelEffects.strips)
+      {
+        var ls = new LedStrip(json.NeoPixelEffects.strips[s].pin, json.NeoPixelEffects.strips[s].leds);
+        ls.frequence = json.NeoPixelEffects.strips[s].frequence;
+        ls.colortype = json.NeoPixelEffects.strips[s].type;
+        LedStrips.ledstrips.push(ls);
+        LedStrips.strips++;
+        LedStrips.SelectStrip(ls);
+        addLedStrip(ls);
+        for(var l in json.NeoPixelEffects.strips[s].loop)
+        {
+          this._importCodeLoop(ls.loop, json.NeoPixelEffects.strips[s].loop[l]);
+        }
+      }
+    }
+  }
+  
+  _importCodeLoop(loop, jsonEffect)
+  {
+    if(jsonEffect.loop) // has loop
+    {
+      var newloop = new Loop(loop);
+      newloop.loop.type = jsonEffect.looptype;
+      newloop.loop.count = parseInt(jsonEffect.loopcount);
+      loop.childs.push(newloop);
+      
+      for(var l in jsonEffect.loop)
+      {
+        this._importCodeLoop(loop.childs[loop.childs.length-1], jsonEffect.loop[l]);
+      }
+    }
+    else // is effect
+    {
+      var effId = 0;
+      for(;effId<Effects.effects.length;effId++)
+        if(Effects.effects[effId].name === jsonEffect.type) break;
+      var eff = loop.AddEffect(effId);
+      eff.delay = parseInt(jsonEffect.delay);
+      eff.steps = parseInt(jsonEffect.steps);
+      eff.colors = [];
+      for(var c in jsonEffect.colors)
+      {
+        var p = new Pixel(
+                parseInt(jsonEffect.colors[c].red), 
+                parseInt(jsonEffect.colors[c].green), 
+                parseInt(jsonEffect.colors[c].blue), 
+                parseInt(jsonEffect.colors[c].white));
+        eff.colors.push(p);
+      }
+      for(var o in jsonEffect.options)
+      {
+        if(jsonEffect.options[o]['value'] === 'true' || jsonEffect.options[o]['value'] === 'false')
+          eff.options[jsonEffect.options[o]['name']] = (jsonEffect.options[o]['value'] === 'true');
+        else if(parseInt(jsonEffect.options[o]['value']) > 0)
+          eff.options[jsonEffect.options[o]['name']] = parseInt(jsonEffect.options[o]['value']);
+        else
+          eff.options[jsonEffect.options[o]['name']] = jsonEffect.options[o]['value'];
+      }
+    }
   }
   
   ExportCode()

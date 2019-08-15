@@ -185,12 +185,40 @@ class Effect
   
   OpenAnimationSettings()
   {
-    Form.GetInputs("Effect Animation Settings", this.animationSettings);
+    var inputs = [];
+    for(var k in this.animationSettings)
+    {
+      var s = this.animationSettings[k];
+      switch(s.type)
+      {
+        case 'switch': inputs.push(Form.CreateSwitchInput(s.title, s.options[0], s.options[1], s.value(), s.update));
+                        break;
+        case 'slider': inputs.push(Form.CreateSliderInput(s.title, s.value(), s.options[1], s.options[0], s.options[2], s.update));
+                        break;
+        case 'button': inputs.push(Form.CreateCloseButton(s.title, s.update));
+                        break;
+        default:        break;
+      }
+    }
+    Form.GetInputs("Effect Animation Settings", inputs);
   }
   
   OpenColorSettings()
   {
-    Form.GetInputs("Color Settings", this.colorSettings);
+    var inputs = [];
+    for(var k in this.colorSettings)
+    {
+      var s = this.colorSettings[k];
+      switch(s.type)
+      {
+        case 'color': inputs.push(Form.CreateColorInput(s.title, s.color().red, s.color().green, s.color().blue, s.update));
+                        break;
+        case 'button': inputs.push(Form.CreateCloseButton(s.title, s.update));
+                        break;
+        default:        break;
+      }
+    }
+    Form.GetInputs("Color Settings", inputs);
   }
   
   InitEffect()

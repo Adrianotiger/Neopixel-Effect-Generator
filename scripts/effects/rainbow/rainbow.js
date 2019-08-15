@@ -1,7 +1,9 @@
 /* global Form, Effects */
 
+// Version 1.3
+// - updated for Generator 2.0
 // Version 1.2
-// - changed options name from length to steps, as length is a protected name
+// - changed options name from length to rainbowlen, as length is a protected name
 // Version 1.1
 // - Compile errors, when rainbow had a different length than the led strip length
 
@@ -11,12 +13,12 @@ class EffectRainbow extends Effect
   {
     super();
     this.name = "Rainbow";
-    this.options['steps'] = 1;
+    this.options['rainbowlen'] = 1;
     this.options['toLeft'] = true;
   }
   
   static get Author() {return "Adriano Petrucci";}
-  static get Version() {return "1.1";}
+  static get Version() {return "1.3";}
     
   Init(leds)
   {
@@ -25,34 +27,56 @@ class EffectRainbow extends Effect
     this.colors.push(new Pixel(0,0,255));
     
     this.delay = 20;
-    this.options['steps'] = leds;
+    this.options['rainbowlen'] = leds;
     this.steps = leds;
-    
-    this.animationSettings.push(Form.CreateSwitchInput("Direction:", "left", "right", this.options['toLeft']?"left":"right", function(val){
-      if(val==="left") this.options['toLeft'] = true;
-      else this.options['toLeft'] = false;
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Steps (more steps = more fluid, but slower):", this.steps, leds, 1, -leds * 5, function(val){
-      this.steps = val;
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Length (led qty=entire rainbow):", this.options['steps'], leds, 1, -leds * 5, function(val){
-      this.options['steps'] = val;
-    }.bind(this)));
-    this.animationSettings.push(Form.CreateSliderInput("Delay (time between steps):", this.delay, 5, 1, -100, function(val){
-      this.delay = val;
-    }.bind(this)));
-    
-    for(var k=0;k<this.colors.length;k++)
+    this.animationSettings.push(
+      {type:'switch', title:'Direction:', options:['left','right'], value:()=>{return this.options['toLeft']?"left":"right";}, update:(val)=>{
+          this.options['toLeft'] = (val === "left");
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Steps (more steps = more fluid, but slower):', options:[1, leds, -leds*5], value:()=>{return this.steps;}, update:(val)=>{
+         this.steps = val;
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Length (led qty=entire rainbow):', options:[1, leds, -leds*5], value:()=>{return this.options['rainbowlen'];}, update:(val)=>{
+         this.options['rainbowlen'] = val;
+        }
+      }
+    );
+    this.animationSettings.push(
+      {type:'slider', title:'Delay (time between steps):', options:[1, 5, -100], value:()=>{return this.delay;}, update:(val)=>{
+         this.delay = val;
+        }
+      }
+    );
+    for(let k=0;k<this.colors.length;k++)
     {
-      this.colorSettings.push(Form.CreateColorInput("Color " + (k+1) + " :", this.colors[k].red, this.colors[k].green, this.colors[k].blue, this.CreateFunc2(k, this)));
+      this.colorSettings.push(
+        {
+          type:'color', title:'Color ' + (k+1) + ' :', color:()=>{return new Pixel(this.colors[k].red, this.colors[k].green, this.colors[k].blue, this.colors[k].white);}, update:this.CreateFunc2(k, this)
+        }
+      );
     }
-    this.colorSettings.push(Form.CreateCloseButton("Add Color", function(){
-      var k = this.colors.length;
-      this.colors.push(new Pixel(255,0,0));
-      this.colorSettings.splice(-1, 0, Form.CreateColorInput("Color " + (k+1) + " :", this.colors[k].red, this.colors[k].green, this.colors[k].blue, this.CreateFunc2(k, this)));
-      this.OpenColorSettings();
-    }.bind(this)));
-    
+    this.colorSettings.push(
+      {
+        type:'button', title:'Add Color', update:()=>{
+          var k = this.colors.length;
+          this.colors.push(new Pixel(255,0,0));
+          this.colorSettings.splice(
+                  -1, 
+                  0, 
+                  {
+                    type:'color', title:'Color ' + (k+1) + ' :', color:()=>{return new Pixel(this.colors[k].red, this.colors[k].green, this.colors[k].blue, this.colors[k].white);}, update:this.CreateFunc2(k, this)
+                  }
+          );
+          this.OpenColorSettings();
+        }
+      }
+    );
     super.Init(leds);
   }
 
@@ -101,9 +125,9 @@ class EffectRainbow extends Effect
     var substeps = this.steps / colors;
     var pos;
     if(this.options['toLeft'])
-      pos = this.step + led * this.steps / this.options['steps'];
+      pos = this.step + led * this.steps / this.options['rainbowlen'];
     else
-      pos = this.steps - (this.step - led * this.steps / this.options['steps']) % this.steps;
+      pos = this.steps - (this.step - led * this.steps / this.options['rainbowlen']) % this.steps;
 
     for(var j=0;j<colors;j++)
     {
@@ -138,9 +162,9 @@ class EffectRainbow extends Effect
         
     code += "  if(millis() - " + s + ".effStart < " + this.delay + " * (" + s + ".effStep)) return 0x00;\n";
     code += "  float factor1, factor2;\n";
-    code += "  uint16_t ind;\n";// = " + (this.options['toLeft'] ? s + ".step + "this.step + led * this.steps / this.options['steps'] : );
+    code += "  uint16_t ind;\n";// = " + (this.options['toLeft'] ? s + ".step + "this.step + led * this.steps / this.options['rainbowlen'] : );
     code += "  for(uint16_t j=0;j<" + leds + ";j++) {\n";
-    code += "    ind = " + (this.options['toLeft'] ? s + ".effStep + j * " + (this.steps / this.options['steps']) : this.steps + " - (" + s + ".effStep - j * " + (this.steps / this.options['steps']) + ") % " + this.steps) + ";\n";
+    code += "    ind = " + (this.options['toLeft'] ? s + ".effStep + j * " + (this.steps / this.options['rainbowlen']) : this.steps + " - (" + s + ".effStep - j * " + (this.steps / this.options['rainbowlen']) + ") % " + this.steps) + ";\n";
     code += "    switch((int)((ind % " + this.steps + ") / " + (this.steps / this.colors.length) + ")) {\n";
     for(var k=0;k<this.colors.length;k++)
     {
