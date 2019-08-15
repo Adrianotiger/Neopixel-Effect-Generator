@@ -75,6 +75,34 @@ var Form = new class
     return div;
   }
   
+  CreateSelectionInput(title, value, options, func)
+  {
+    var div = document.createElement("div");
+    var h3 = document.createElement("h3");
+    h3.setAttribute("style", "display:inline-block;margin:10px;");
+    h3.appendChild(document.createTextNode(title));
+    div.appendChild(h3);
+    var inp = document.createElement("select");
+    inp.setAttribute("value", value);
+    for(var o=0;o<options.length;o++)
+    {
+      var opt = document.createElement("option");
+      opt.setAttribute("value", options[o]);
+      opt.appendChild(document.createTextNode(options[o]));
+      if(options[o].toString() === value.toString()) opt.setAttribute("selected", "true");
+      inp.appendChild(opt);
+    }
+    div.appendChild(inp);
+    inp.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    inp.addEventListener("change", function(){
+      func(inp.value);
+    });
+    return div;
+  }
+  
   CreateSliderInput(title, value, def, min, max, func)
   {
     var div = document.createElement("div");

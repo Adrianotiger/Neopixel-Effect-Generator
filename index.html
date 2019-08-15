@@ -8,7 +8,7 @@
     <meta name="author" content="Adriano Petrucci">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     
-    <link rel="stylesheet" href="css/form.css" />
+    <link rel="stylesheet" href="css/form.css?v=1" />
     <link rel="stylesheet" href="css/leds.css" />
     
     <script src="scripts/form_slider.js" ></script>
@@ -17,6 +17,7 @@
     <script src="scripts/loops.js" ></script>
     <script src="scripts/strip.js" ></script>
     <script src="scripts/arduino.js" ></script>
+    <script src="scripts/tools.js" ></script>
         
     <link rel="stylesheet" href="css/arduino-light.css">
     <script src="scripts/highlight.pack.js"></script>
@@ -61,13 +62,24 @@
         animation as code.<br>
         The source code and documentation are hosted on GitHub:<br>
         <a href="https://github.com/Adrianotiger/Neopixel-Effect-Generator">https://github.com/Adrianotiger/Neopixel-Effect-Generator</a><br><br>
-        Want to discuss about this led strip? Post your question on the Ardiuno forum:<br>
+        Want to discuss about this led strip project? Post your question on the Ardiuno forum:<br>
         <a href="https://forum.arduino.cc/index.php?topic=534060.0">https://forum.arduino.cc/index.php?topic=534060.0</a><br><br>
-        &copy; 2018 - Adriano
+        &copy; 2018-2019 - Adriano
       </div>
     </div>
     
     <div id="ledstripsdiv" style="position:fixed;width:100vw;top:0px;">
+      <div style="float:left;width:230px;height:120px;background-color:#6f6f6f;border-width:2px;border-color:#484848;border-style:ridge;border-radius:10px;">
+        <table style="height:100%;">
+          <tr><td>
+            <input type="button" value="Import" onclick="Tools.ImportCode()" />
+            <input type="button" value="Export" onclick="Tools.ExportCode()" />
+          </td></tr>
+          <tr><td style="vertical-align: bottom;">
+            <input type="button" value="generate Arduino code" onclick="Arduino.GenerateCode()" />
+          </td></tr>
+        </table>
+      </div>
       <div style="float:right;width:230px;height:120px;background-color:#6f6f6f;border-width:2px;border-color:#484848;border-style:ridge;border-radius:10px;">
         <table style="height:100%;">
           <tr><td>
@@ -77,7 +89,7 @@
             </i>
           </td></tr>
           <tr><td style="vertical-align: bottom;">
-            <input type="button" value="generate Arduino code" onclick="Arduino.GenerateCode()" />
+            
           </td></tr>
         </table>
       </div>

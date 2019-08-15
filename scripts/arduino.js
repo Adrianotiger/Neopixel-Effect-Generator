@@ -7,10 +7,11 @@ var Arduino = new class
     this.stripsInit = "//[STRIPS_INIT]\n";
     this.stripsLoop = "//[STRIPS_LOOP]\n";
     this.stripsFunctions = "//[STRIPS_FUNCTIONS]\n";
+    this.stripsType = "[STRIPS_TYPE]";
     
     this.baseCode = "#include <Adafruit_NeoPixel.h>\n\n";
     this.baseCode += "class Strip\n{\npublic:\n  uint8_t   effect;\n  uint8_t   effects;\n  uint16_t  effStep;\n  unsigned long effStart;\n  Adafruit_NeoPixel strip;\n";
-      this.baseCode += "  Strip(uint16_t leds, uint8_t pin, uint8_t toteffects) : strip(leds, pin, NEO_GRB + NEO_KHZ800) {\n    effect = -1;\n    effects = toteffects;\n    Reset();\n  }\n";
+      this.baseCode += "  Strip(uint16_t leds, uint8_t pin, uint8_t toteffects, uint16_t striptype) : strip(leds, pin, striptype) {\n    effect = -1;\n    effects = toteffects;\n    Reset();\n  }\n";
       this.baseCode += "  void Reset(){\n    effStep = 0;\n    effect = (effect + 1) % effects;\n    effStart = millis();\n  }\n";
     this.baseCode += "};\n\n";
     this.baseCode += "struct Loop\n{\n  uint8_t currentChild;\n  uint8_t childs;\n  bool timeBased;\n  uint16_t cycles;\n  uint16_t currentTime;\n  ";
@@ -75,6 +76,11 @@ var Arduino = new class
       hljs.highlightBlock(txtArea);
   }
   
+  ReplaceStripType(original)
+  {
+    return original.replace(this.stripsType, NEO_GRB + NEO_KHZ800)
+  }
+  
   ReplaceDeclaration(original)
   {
     var decl = "";
@@ -83,7 +89,8 @@ var Arduino = new class
     {
       decl += "Strip strip_" + k + "(" + LedStrips.GetStrip(k).leds.length + ", ";
         decl += LedStrips.GetStrip(k).pin + ", ";
-        decl += LedStrips.GetStrip(k).leds.length + " ";
+        decl += LedStrips.GetStrip(k).leds.length + ", ";
+        decl += LedStrips.GetStrip(k).colortype + " + NEO_KHZ" + LedStrips.GetStrip(k).frequence;
         decl += ");\n";
     }
     for(var k=0;k<LedStrips.Count();k++)
