@@ -1,4 +1,4 @@
-input
+input,select
 {
   background-color: #000000;
   color: #76ff03;
@@ -9,7 +9,7 @@ input
   box-shadow: 0px 0px 2px 2px #000000, 0px 0px 3px 3px #ffff00;
 }
 
-input:hover
+input:hover,select:hover
 {
   box-shadow: 0px 0px 2px 2px #000000, 0px 0px 5px 5px #ffff00;
   background-color:#303030;

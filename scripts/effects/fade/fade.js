@@ -1,5 +1,8 @@
 /* global Form, Effects */
 
+// Version 1.1
+// - Arduino code was wrong, it was never fading...
+// 
 // Every effect extends the Effect class.
 // This will give some base functionality
 class EffectFade extends Effect
@@ -133,12 +136,12 @@ class EffectFade extends Effect
     code += "  uint8_t r,g,b;\n";
     code += "  double e;\n";
     code += "  e = (" + s + ".effStep * " + this.delay + ") / " + this.options['duration'] + ";\n";
-    code += "  r = " + this.colors[1].red + " * ( e ) + " + this.colors[0].red + " * ( 1.0 - e );\n";
-    code += "  g = " + this.colors[1].green + " * ( e ) + " + this.colors[0].green + " * ( 1.0 - e );\n";
-    code += "  b = " + this.colors[1].blue + " * ( e ) + " + this.colors[0].blue + " * ( 1.0 - e );\n";
+    code += "  r = ( e ) * " + this.colors[1].red + " + " + this.colors[0].red + " * ( 1.0 - e );\n";
+    code += "  g = ( e ) * " + this.colors[1].green + " + " + this.colors[0].green + " * ( 1.0 - e );\n";
+    code += "  b = ( e ) * " + this.colors[1].blue + " + " + this.colors[0].blue + " * ( 1.0 - e );\n";
     code += "  for(uint16_t j=0;j<" + leds + ";j++) {\n";
     code += "    if((j % " + this.options['every'] + ") == 0)\n";
-    code += "      " + s + ".strip.setPixelColor(j, " + this.colors[0].red + ", " + this.colors[0].green + ", " + this.colors[0].blue + ");\n";
+    code += "      " + s + ".strip.setPixelColor(j, r, g, b);\n";
     code += "    else\n";
     code += "      " + s + ".strip.setPixelColor(j, 0, 0, 0);\n";
     code += "  }\n";

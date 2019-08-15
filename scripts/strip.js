@@ -116,6 +116,8 @@ class LedStrip
     this.loop = new Loop(this);
     this.leds = [];
     this.current = 0;
+    this.frequence = 800;
+    this.colortype = "NEO_GRB";
     this.div = document.createElement("div");
     this.div.className = "ledstrip";
     for(var j=0;j<leds;j++)
@@ -183,6 +185,14 @@ class LedStrip
         this.pin = parseInt(val);
       }
     }.bind(this)));
+    
+    inputs.push(Form.CreateSelectionInput("Strip frequence (kHz):", this.frequence, [400,800], function(val){
+      this.frequence = val;
+    }.bind(this)));
+    
+    inputs.push(Form.CreateSelectionInput("Strip type (default 'Neo NEO_GRB'):", this.colortype, ["NEO_RGB","NEO_RBG","NEO_GRB","NEO_GBR","NEO_BRG","NEO_BGR","NEO_WRGB","NEO_WRBG","NEO_WGRB","NEO_WGBR","NEO_WBRG","NEO_WBGR"], function(val){
+      this.colortype = val;
+    }.bind(this)));
 
     inputs.push(Form.CreateCloseButton("Remove Strip", function(){
       LedStrips.Remove(this);
@@ -236,18 +246,20 @@ class LedStrip
 
 class Pixel
 {
-  constructor(red, green, blue)
+  constructor(red, green, blue, white)
   {
     this.red = red;
     this.green = green;
     this.blue = blue;
+    this.white = white ? white : 0;
   }
 
-  SetColor(col1, col2, col3)
+  SetColor(col1, col2, col3, col4)
   {
     this.red = col1;
     this.green = col2;
     this.blue = col3;
+    this.white = col4 ? col4 : 0;
   }
 
   GetColor()

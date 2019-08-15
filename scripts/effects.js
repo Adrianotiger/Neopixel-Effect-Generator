@@ -217,7 +217,8 @@ class Effect
     sRet += "    // Colors: " + this.colors.length + " (";
     for(var j=0;j<this.colors.length;j++)
     {
-      sRet += this.colors[j].red + "." + this.colors[j].green + "." + this.colors[j].blue + ", ";
+      if(j>0) sRet += ", ";
+      sRet += this.colors[j].red + "." + this.colors[j].green + "." + this.colors[j].blue;
     }
     sRet += ")\n";
     sRet += "    // Options: ";
