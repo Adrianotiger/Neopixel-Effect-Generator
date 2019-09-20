@@ -1,5 +1,7 @@
 /* global Form, Effects */
 
+// Version 1.4
+// - fixed problem with Arduino code when rainbow does not fill complelty all leds 
 // Version 1.3
 // - updated for Generator 2.0
 // Version 1.2
@@ -18,7 +20,7 @@ class EffectRainbow extends Effect
   }
   
   static get Author() {return "Adriano Petrucci";}
-  static get Version() {return "1.3";}
+  static get Version() {return "1.4";}
     
   Init(leds)
   {
@@ -164,7 +166,7 @@ class EffectRainbow extends Effect
     code += "  float factor1, factor2;\n";
     code += "  uint16_t ind;\n";// = " + (this.options['toLeft'] ? s + ".step + "this.step + led * this.steps / this.options['rainbowlen'] : );
     code += "  for(uint16_t j=0;j<" + leds + ";j++) {\n";
-    code += "    ind = " + (this.options['toLeft'] ? s + ".effStep + j * " + (this.steps / this.options['rainbowlen']) : this.steps + " - (" + s + ".effStep - j * " + (this.steps / this.options['rainbowlen']) + ") % " + this.steps) + ";\n";
+    code += "    ind = " + (this.options['toLeft'] ? s + ".effStep + j * " + (this.steps / this.options['rainbowlen']) : this.steps + " - (uint16_t)(" + s + ".effStep - j * " + (this.steps / this.options['rainbowlen']) + ") % " + this.steps) + ";\n";
     code += "    switch((int)((ind % " + this.steps + ") / " + (this.steps / this.colors.length) + ")) {\n";
     for(var k=0;k<this.colors.length;k++)
     {

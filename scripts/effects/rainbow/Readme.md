@@ -3,6 +3,14 @@
 * Author: Adriano Petrucci
 * Version: 1.0
 * Changelog:
+    * Version 1.4
+        * fixed problem with Arduino code when rainbow does not fill complelty all leds 
+    * Version 1.3
+        * updated for Generator 2.0
+    * Version 1.2
+        * changed options name from length to rainbowlen, as length is a protected name
+    * Version 1.1
+        * Compile errors, when rainbow had a different length than the led strip length
     * 1.0:
         * First version
 
