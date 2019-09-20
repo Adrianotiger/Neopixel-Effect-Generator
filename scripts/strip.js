@@ -18,6 +18,8 @@ var LedStrips = new class
     this.selected = null;
     this.currentUsed = 0;
     this.maxCurrent = 0;
+    this.ram = 0;
+    this.flash = 0;
   }
   
   Count()
@@ -76,13 +78,16 @@ var LedStrips = new class
   Loop()
   {
     this.currentUsed = 0;
+    this.ram = 56; // base variables
     for(var s=0;s<this.Count();s++)
     {
       this.ledstrips[s].Loop();
       this.currentUsed += this.ledstrips[s].current;
+      this.ram += this.ledstrips[s].ram;
     }
     if(this.currentUsed > this.maxCurrent) this.maxCurrent = this.currentUsed;
     document.getElementById('info_current').innerHTML = (parseInt(this.currentUsed / 10) / 100) + "A (max:" + (parseInt(this.maxCurrent / 100) / 10) + "A)";
+    document.getElementById('info_ram').innerHTML = parseInt(this.ram) + " bytes";
   }
   
   Remove(ledStrip)
@@ -116,6 +121,8 @@ class LedStrip
     this.loop = new Loop(this);
     this.leds = [];
     this.current = 0;
+    this.ram = 0;
+    this.flash = 0;
     this.frequence = 800;
     this.colortype = "NEO_GRB";
     this.div = document.createElement("div");
@@ -209,6 +216,7 @@ class LedStrip
   {
     var r,g,b,a,r1,g1,b1,norm;
     this.current = 0;
+    this.ram = this.leds.length * 3;
     for(var j=0;j<this.leds.length;j++)
     {
       r = this.leds[j].red;
