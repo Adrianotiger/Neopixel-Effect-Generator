@@ -260,9 +260,9 @@ class Loop
   GetArduinoLoops(stripid, loopname)
   {
     var code = "struct Loop strip" + stripid + loopname + "(" + this.childs.length + ", " + (this.loop.type === "time" ? "true" : "false") + ", " + this.loop.count + ");\n";
+    var loopnameAdd = 0;
     for(var k=0;k<this.childs.length;k++)
     {
-      var loopnameAdd = 0;
       if(this.childs[k].constructor === Loop)
       {
         code += this.childs[k].GetArduinoLoops(stripid, loopname + loopnameAdd);
