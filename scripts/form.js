@@ -7,30 +7,40 @@ var Form = new class
   
   CreateSwitchInput(title, val1, val2, def, func)
   {
+
     var div = document.createElement("div");
-    div.setAttribute("style", "height:40px;min-width:150px;");
+    div.setAttribute("style", "min-width:150px;");
+
     var b = document.createElement("b");
     b.appendChild(document.createTextNode(title));
     div.appendChild(b);
-    div.appendChild(document.createElement("br"));
+
     var tab = document.createElement("table");
+    tab.className = 'switch';
     var tr = document.createElement("tr");
     var td = document.createElement("td");
     td.appendChild(document.createTextNode(val1));
+    td.className = 'switch-text';
     tr.appendChild(td);
+
     td = document.createElement("td");
     var oval = document.createElement("div");
-    oval.setAttribute("style", "width:48px;height:16px;border-radius:18px;background-color:white;border-color:#8a8ad2;border-style:ridge;border-width:2px;display:inline-block;position:relative;");
+    oval.className = 'switch-body';
     var slider = document.createElement("div");
-    slider.setAttribute("style", "width:14px;height:14px;border-radius:16px;background-color:#8080ff;border-color:#8a8ad2;border-style:ridge;border-width:2px;display:inline-block;position:absolute;top:-1px;left:"+(def===val1?3:26)+"px;");
+    slider.className = 'switch-circle';
+    slider.setAttribute("style", "left:"+(def===val1?0:26)+"px;");
     oval.appendChild(slider);
     td.appendChild(oval);
     tr.appendChild(td);
+
     td = document.createElement("td");
     td.appendChild(document.createTextNode(val2));
+    td.className = 'switch-text';
     tr.appendChild(td);
     tab.appendChild(tr);
+
     div.appendChild(tab);
+
     div.addEventListener("click", function(e){
       e.preventDefault();
       e.stopPropagation();
@@ -42,21 +52,26 @@ var Form = new class
       else
       {
         def = val1;
-        slider.style.left = "3px";
+        slider.style.left = "0px";
       }
       func(def);
     }.bind(this));
-    return div;
+
+    return div;  
   }
   
   CreateNumberInput(title, value, min, max, func)
   {
     var div = document.createElement("div");
-    var h3 = document.createElement("h3");
-    h3.setAttribute("style", "display:inline-block;margin:10px;");
+    div.className = 'number-input-div';
+    var h3 = document.createElement("p");
+    h3.className = 'setting-p';
+
     h3.appendChild(document.createTextNode(title));
     div.appendChild(h3);
+
     var inp = document.createElement("input");
+    inp.className = 'setting-input';
     inp.setAttribute("type", "number");
     inp.setAttribute("min", min);
     inp.setAttribute("max", max);
@@ -78,12 +93,16 @@ var Form = new class
   CreateSelectionInput(title, value, options, func)
   {
     var div = document.createElement("div");
-    var h3 = document.createElement("h3");
-    h3.setAttribute("style", "display:inline-block;margin:10px;");
+    div.className = 'number-input-div';
+    var h3 = document.createElement("p");
+    h3.className = 'setting-p';
+
     h3.appendChild(document.createTextNode(title));
+
     div.appendChild(h3);
     var inp = document.createElement("select");
     inp.setAttribute("value", value);
+    inp.className = 'setting-input';
     for(var o=0;o<options.length;o++)
     {
       var opt = document.createElement("option");
@@ -118,23 +137,31 @@ var Form = new class
   CreateColorInput(title, red, green, blue, func)
   {
     var div = document.createElement("div");
-    div.setAttribute("style", "min-height:120px;width:350px;");
-    var h3 = document.createElement("h3");
-    h3.setAttribute("style", "display:inline-block;margin:10px;");
-    h3.appendChild(document.createTextNode(title));
-    div.appendChild(h3);
+    div.className = 'open-settings-div';
+
+    var divContainer = document.createElement('div');
+    divContainer.className = 'color-input-div';
+
+    var p = document.createElement("p");
+    p.appendChild(document.createTextNode(title));
+    divContainer.appendChild(p);
+
     var pixel = new Pixel(red, green, blue);
     var divColor = document.createElement("div");
-    divColor.setAttribute("style", "width:100px;height:10px;border-radius:5px;background-color:rgba("+red+","+green+","+blue+",1.0);");
-    div.appendChild(divColor);
+
+    divColor.setAttribute("style", "background-color:rgba("+red+","+green+","+blue+",1.0);");
+    divContainer.appendChild(divColor);
+
     var remove = document.createElement("b");
-    remove.setAttribute("style", "display:inline-block;width:25px;height:16px;color:red;text-decoration:underline;cursor:pointer;");
+
     remove.addEventListener("click", function(e){
       div.parentNode.removeChild(div);
       func(null);
     });
     remove.appendChild(document.createTextNode("X"));
-    div.appendChild(remove);
+    divContainer.appendChild(remove);
+    div.appendChild(divContainer);
+
     var inpR = new Slider(0, 255, red, red, "Red");
     div.appendChild(inpR.div);
     inpR.div.addEventListener("changed", function(e)
@@ -165,39 +192,83 @@ var Form = new class
   CreateCloseButton(text, func)
   {
     var div = document.createElement("div");
-    div.setAttribute("style", "min-height:120px;width:350px;");
+    div.className = 'close-btn-div';
+
     var butt = document.createElement("input");
     butt.setAttribute("type", "button");
     butt.setAttribute("value", text);
+    butt.className = 'remove-strip';
     butt.addEventListener("click", function(){
-      document.body.removeChild(div.parentNode.parentNode);
+      func();
+    });
+    div.appendChild(butt);
+    return div;
+  }
+
+  CreateColorButton(text, func)
+  {
+    var div = document.createElement("div");
+    div.className = 'close-btn-div';
+
+    var butt = document.createElement("input");
+    butt.setAttribute("type", "button");
+    butt.setAttribute("value", text);
+    butt.className = 'color-add';
+    butt.addEventListener("click", function(){
       func();
     });
     div.appendChild(butt);
     return div;
   }
   
-  GetInputs(title, inputs)
+  GetInputs(inputs, pin)
   {
-    var black = document.createElement("div");
-    black.className = "formoverlayblack";
-    black.addEventListener("click", function(){
-      document.body.removeChild(black);
-    }.bind(this));
-    var window = document.createElement("div");
-    window.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-    }.bind(this));
-    window.className = "formwindow";
-    var h2 = document.createElement("h2");
-    h2.appendChild(document.createTextNode(title));
-    window.appendChild(h2);
+    var stripDiv = document.getElementById('strip');
+    while(stripDiv.childElementCount > 0){
+      stripDiv.removeChild(stripDiv.lastElementChild);
+    }    
+  
     for(var k in inputs)
     {
-      window.appendChild(inputs[k]);
+      stripDiv.appendChild(inputs[k]);      
     }
-    black.appendChild(window);
-    document.body.appendChild(black);
+    stripDiv.style.display = 'block';
+    stripDiv.className = 'settings-div';
+  }
+
+  GetInputsSetttings(title, inputs) {
+
+    var test = document.getElementById('test');
+    while (test.childElementCount > 0) {
+      test.removeChild(test.firstChild);
+    }
+
+    var tit = document.createElement('h3');
+    tit.innerHTML = title;
+    var footer = document.getElementsByClassName('footer')[0];
+    footer.style.zIndex = '1';
+
+    var close = document.createElement('div');
+    close.className = 'close-btn';
+    close.innerHTML = 'X';
+    close.addEventListener('click', function() {
+      footer.style.zIndex = '-1';
+      test.style.display = 'none';
+    })
+    test.appendChild(close);
+    test.appendChild(tit);
+
+    if (inputs[0].childNodes[0].innerText == '') {
+      var divContainer = document.createElement('div');
+      for (let i = 0; i < inputs.length; i++) {
+        divContainer.appendChild(inputs[i]);
+      }
+      test.appendChild(divContainer);
+    } else {
+      for (var k in inputs) {
+        test.appendChild(inputs[k]);
+      }
+    }
+    test.style.display = 'block';
   }
 };

@@ -11,35 +11,44 @@ class Loop
     this.ledStrip = null;
     this.div = document.createElement("div");
     this.div.className = "loopdiv";
-    var i = document.createElement("i");
-    i.appendChild(document.createTextNode("Loop"));
-    i.addEventListener("click", function(){
+
+    var p = document.createElement("p");
+    p.appendChild(document.createTextNode("Loop"));
+
+    p.addEventListener("click", function(){
       var inputs = [];
-      inputs.push(Form.CreateSwitchInput("Looping:", "time", "cycle", this.loop.type, function(val){
+      inputs.push(Form.CreateSwitchInput("", "time", "cycle", this.loop.type, function(val){
         this.loop.type = val;
       }.bind(this)));
       inputs.push(Form.CreateNumberInput("Time(seconds) / Cycles(count):", this.loop.count, 1, 10000, function(val){
         this.loop.count = parseInt(val);
       }.bind(this)));
-      Form.GetInputs("Loop Settings", inputs);
+
+      Form.GetInputsSetttings("Looping ", inputs);
     }.bind(this));
-    this.div.appendChild(i);
+    
+    this.div.appendChild(p);
     
     var addSpan = document.createElement("span");
-    addSpan.setAttribute("style", "display:inline-block;position:absolute;bottom:0px;right:0px;font-size:80%;");
+    addSpan.className = 'span-btn';
+
     var addEffect = document.createElement("b");
-    addEffect.setAttribute("style", "color:#005500;border-color:#338833;border-style:solid;border-width:1px;display:inline-block;position:relative;background-color:#a0ffa0;border-radius:8px;cursor:pointer;padding:2px;margin-right:5px;");
+
+    addEffect.className = 'btn-add-effect';
     addEffect.appendChild(document.createTextNode("+ Add Effect"));
     addEffect.addEventListener("click", function(e){
       Effects.ChooseEffect(e, this);
     }.bind(this));
     addSpan.appendChild(addEffect);
+
     var addLoop = document.createElement("b");
-    addLoop.setAttribute("style", "color:#000055;border-color:#333388;border-style:solid;border-width:1px;display:inline-block;position:relative;background-color:#a0a0ff;border-radius:8px;cursor:pointer;padding:2px;margin-right:5px;");
+
+    addLoop.className = 'btn-add-loop';
     addLoop.appendChild(document.createTextNode("+ Add Loop"));
     addLoop.addEventListener("click", function(){
       var loop = new Loop(this);
       this.childs.push(loop);
+
     }.bind(this));
     addSpan.appendChild(addLoop);
     this.div.appendChild(addSpan);
@@ -47,6 +56,7 @@ class Loop
     if(parent.constructor === LedStrip)
     {
       this.ledStrip = parent;
+
     }
     else
     {
@@ -69,7 +79,16 @@ class Loop
     
     if(parent.constructor === LedStrip) parent = document.getElementById("ledeffectsdiv");
     else parent = parent.div;
-    parent.appendChild(this.div);
+    
+    if (document.getElementById("ledeffectsdiv").childElementCount == 0) {
+      parent.appendChild(this.div);
+    } else {
+      while (document.getElementById("ledeffectsdiv").childElementCount > 1){
+        document.getElementById("ledeffectsdiv").removeChild(document.getElementById("ledeffectsdiv").firstChild);
+      };
+      parent.appendChild(this.div);
+    }
+
     parent.appendChild(document.createElement("br"));
   }
   
@@ -98,6 +117,15 @@ class Loop
         break;
       }
     }
+    var test = document.getElementById('test');
+    while (test.childElementCount > 0) {
+     test.removeChild(test.childNodes[0]);
+    }
+    test.style.display = 'none';
+
+    var footer = document.getElementsByClassName('footer')[0];
+    footer.style.zIndex = '0';
+
     this.div.removeChild(effect.div.nextSibling);
     this.div.removeChild(effect.div);
     if(this.currentChild >= this.childs.length) this.currentChild = -1;
@@ -113,16 +141,15 @@ class Loop
     delEffect.addEventListener("click", function(){
       this.RemoveInnerEffect(this, effect);
     }.bind(this));
-    var infoEffect = document.createElement("b");
+    var infoEffect = document.createElement("i");
     infoEffect.className = "formbutton_info";
     infoEffect.appendChild(document.createTextNode("i"));
     infoEffect.addEventListener("click", function(e){
       Effects.ShowInfo(e, effectid);
     }.bind(this));
+
     effect.div.appendChild(delEffect);
     effect.div.appendChild(infoEffect);
-    effect.div.appendChild(effect.table);
-
     this.childs.push(effect);
     this.div.appendChild(effect.div);
     this.div.appendChild(document.createElement("br"));
