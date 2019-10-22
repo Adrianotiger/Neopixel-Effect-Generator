@@ -1,4 +1,3 @@
-
 var Arduino = new class
 {
   constructor()
@@ -35,20 +34,30 @@ var Arduino = new class
   
   GenerateCode()
   {
+    var divy = document.getElementById('arduCodeDiv');
+    
+    while(divy.childElementCount > 0){
+      divy.removeChild(divy.firstChild);
+    }
+
+    divy.className = 'arduino-code-div';
+    var button = document.createElement('button');
+    button.appendChild(document.createTextNode('Copy Code'));
+    button.className = 'btn-copy';
+
     var black = document.createElement("div");
-    black.className = "formoverlayblack";
-    black.addEventListener("click", function(){
-      document.body.removeChild(black);
-    }.bind(this));
+    divy.appendChild(black);
     var window = document.createElement("div");
     window.addEventListener("click", function(e){
       e.preventDefault();
       e.stopPropagation();
     }.bind(this));
-    window.className = "formwindow";
+
+
     var h2 = document.createElement("h2");
     h2.appendChild(document.createTextNode("Arduino Code"));
     window.appendChild(h2);
+
     
     var code = this.baseCode;
     code = this.ReplaceDeclaration(code);
@@ -57,21 +66,35 @@ var Arduino = new class
     code = this.ReplaceFunctions(code);
     
     var txtArea = document.createElement("pre");
-    txtArea.setAttribute("style", "max-height:70vh;overflow:scroll;background-color:white;text-align:left;overflow:auto;font-size:70%;");
+    txtArea.setAttribute("style", "max-height:70vh;overflow:auto;background-color:white;text-align:left;overflow:auto;font-size:70%;");
     var txtCode = document.createElement("code");
+    txtCode.style.fontSize = '14px';
     txtArea.addEventListener("click", function(){
       var range = document.createRange();
       range.selectNode(txtArea);
       document.getSelection().empty();
       document.getSelection().addRange(range);
     });
+
+    var textarea = document.createElement("textarea");
+    textarea.setAttribute('readonly', 'true');
+    textarea.className = 'hide-input-for-copy';
+    textarea.innerHTML = code;
+
+
+    button.addEventListener('click', () => {
+      textarea.select();
+      document.execCommand('Copy');
+      alert('Copied!');
+    });
+    divy.appendChild(button);
+
     txtCode.appendChild(document.createTextNode(code));
     txtArea.appendChild(txtCode);
-    window.appendChild(txtArea);
-    
-    black.appendChild(window);
-    document.body.appendChild(black);
-    
+
+    divy.appendChild(txtArea);
+    divy.appendChild(textarea);    
+
     if(hljs)
       hljs.highlightBlock(txtArea);
   }
@@ -103,7 +126,6 @@ var Arduino = new class
   ReplaceGlobal(original)
   {
     var global = "";
-    
   }
   
   ReplaceInit(original)

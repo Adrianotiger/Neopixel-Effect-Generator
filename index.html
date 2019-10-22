@@ -10,7 +10,6 @@
     
     <link rel="stylesheet" href="css/form.css?v=1" />
     <link rel="stylesheet" href="css/leds.css" />
-    
     <script src="scripts/form_slider.js" ></script>
     <script src="scripts/form.js" ></script>
     <script src="scripts/effects.js" ></script>
@@ -18,86 +17,165 @@
     <script src="scripts/strip.js" ></script>
     <script src="scripts/arduino.js" ></script>
     <script src="scripts/tools.js" ></script>
-        
     <link rel="stylesheet" href="css/arduino-light.css">
     <script src="scripts/highlight.pack.js"></script>
     
     <script>
+      let props = {
+        angle : 90,
+        color : '#fff'
+      };
+
+      function rotate(e) {
+        var arr = Array.from(e.childNodes).filter(e => e.className == 'arrow');
+        arr[0].style.color = props.color;
+        arr[0].style.transform = `rotate(${props.angle}deg)`;
+        arr[0].style.transition = 'all 0.2s linear';
+        props.angle = (props.angle == 0) ? 90 : 0;
+        props.color = (props.color == '#2a2ac9') ? '#fff' : '#2a2ac9';
+      }
+
+      function change(e) {
+        document.getElementsByClassName('sidenav-list-item')[1].id = 'active';
+        var ledstripsdiv = document.getElementById('ledstripsdiv');
+        for (let i = 0; i < ledstripsdiv.childElementCount; i++) {
+          ledstripsdiv.childNodes[i].style.background = 'rgb(233,233,233)';
+        }
+        e.style.background = 'rgb(100,100,100)';
+      }
+
       var interval = null;
-            
-      function addLedStrip(ledStrip)
-      {
-        if(!ledStrip || typeof ledStrip === 'undefined') ledStrip = LedStrips.AddLedStrip();
-        
-        document.getElementById("ledstripsdiv").appendChild(ledStrip.GetDiv());
+      function addLedStrip(ledStrip) {
+        if (!ledStrip || typeof ledStrip === 'undefined'){
+          ledStrip = LedStrips.AddLedStrip();
+        } 
+        document.getElementById('ledstripsdiv').appendChild(ledStrip.GetDiv());
         document.getElementById("ledeffectsdiv").style.paddingTop = parseInt(document.getElementById("ledeffectsdiv").style.paddingTop) + 30 + "px";
         document.getElementById("ledeffectsdiv").style.display = "block";
+        document.getElementById('effects').style.display = "block";
+        document.getElementsByClassName('sidenav-list-item')[0].id = 'active';
       }
-      
+
       var start = window.performance.now();
-            
-      function loop()
-      {
+      function loop() {
         LedStrips.Loop();
       }
-      
-      interval = window.setInterval(function(){loop();}, 0);
+      interval = window.setInterval(function () { loop(); }, 0);
     </script>
-    <style>
-      div
-      {
-        margin:0 auto;
-      }
-      table
-      {
-        margin:0 auto;
-      }
-    </style>
   </head>
-  <body style='background-color:#151515;color:#ffffff;margin:0px;text-align:center;'>
-    <div id="ledeffectsdiv" style="position:relative;padding-top:200px;">
-      <h2>Effects:</h2>
-      <div>
-        This generator will create a code for the neopixel led strip. Just create your animation and press "generate Arduino code" to get your
-        animation as code.<br>
-        The source code and documentation are hosted on GitHub:<br>
-        <a href="https://github.com/Adrianotiger/Neopixel-Effect-Generator">https://github.com/Adrianotiger/Neopixel-Effect-Generator</a><br><br>
-        Want to discuss about this led strip project? Post your question on the Ardiuno forum:<br>
-        <a href="https://forum.arduino.cc/index.php?topic=534060.0">https://forum.arduino.cc/index.php?topic=534060.0</a><br><br>
-        Version 2.2 <br> &copy; 2018-2019 - Adriano
-      </div>
+  <body onload="charge()">
+    <div class="grid-container">
+
+      <header class="header">
+        <div class="expand-container" >
+          <div class="expandable" onclick="expand(this)">
+            <div class="menu-icon"></div>
+            <div class="menu-icon"></div>
+            <div class="menu-icon"></div>
+          </div>
+        </div>
+        <h1 class="title">LED Strip Effects Generator</h1>
+        <p class="subtitle">
+          Create your animation for the Neopixel LED Strip and press "Generate Arduino Code" to get it as code.
+        </p>
+      </header>
+     
+      <aside class="sidenav">
+        <div class="sidenav-data">
+          
+          <div
+            title="If the browser is too slow, the animation on the led strip is much faster. The Speed factor shows how much faster the led strip will be.">
+            <p>Speed factor: <em id='info_speedfactor'>1x</em> </p>
+            <p>Current: <em id='info_current'>0A (max: 0A)</em> </p>
+            <p>RAM: <em id='info_ram'>0 bytes</em> </p>
+            <p>Flash: <em id='info_ram'>4.4 kb</em> </p>
+          </div>
+        </div>
+  
+        <ul class="sidenav-list">
+          <li class="add-led"><input type="button" id="add" class="btn-add-strip" onclick="addLedStrip();"
+              value="Add Led Strip" /></li>
+  
+          <li class="sidenav-list-item">
+            <p>Effects</p>
+          </li>
+          <div class="panel active" id="effects">
+            <div id="ledeffectsdiv"></div>
+          </div>
+  
+          <li class="sidenav-list-item" id="li">
+            <p>Strip Settings</p>
+          </li>
+          <div class="panel" id="strip">
+            <p id="message">Please select a LED strip to access the settings.</p>
+          </div>
+  
+          <li class="sidenav-list-item">
+            <p onclick="Tools.ImportCode()">Import </p>
+          </li>
+          <div id="importDiv"></div>
+  
+          <li class="sidenav-list-item">
+            <p onclick="Tools.ExportCode()">Export </p>
+          </li>
+          <div id="exportDiv"></div>
+  
+          <li class="sidenav-list-item">
+            <p class="emphasis" onclick="Arduino.GenerateCode()">Generate Arduino Code </p>
+          </li>
+          <div id="arduCodeDiv"></div>
+  
+          <li class="sidenav-list-item">
+            <div id="header" onclick="rotate(this)">
+              <p>About</p>
+              <p class="arrow">&#9660</p>
+            </div>
+          </li>
+          <div id="aboutDiv">
+            <div>
+              The source code and documentation are hosted on GitHub:<br>
+              <a
+                href="https://github.com/Adrianotiger/Neopixel-Effect-Generator">https://github.com/Adrianotiger/Neopixel-Effect-Generator</a>
+              <br><br>
+              Want to discuss about this led strip project? Post your question on the Ardiuno forum:<br>
+              <a
+                href="https://forum.arduino.cc/index.php?topic=534060.0">https://forum.arduino.cc/index.php?topic=534060.0</a>
+            </div>
+          </div>
+        </ul>
+      </aside>
+  
+      <main class="main">
+        <div id="ledstripsdiv"></div>
+        <div id="test"></div>
+      </main>
+  
+      <footer class="footer">
+        <p class="unselectable">Version 2.2 <br> &copy; 2018-2019 - Adriano</p>
+      </footer>
     </div>
-    
-    <div id="ledstripsdiv" style="position:fixed;width:100vw;top:0px;">
-      <div style="float:left;width:230px;height:120px;background-color:#6f6f6f;border-width:2px;border-color:#484848;border-style:ridge;border-radius:10px;">
-        <table style="height:100%;">
-          <tr><td>
-            <input type="button" value="Import" onclick="Tools.ImportCode()" />
-            <input type="button" value="Export" onclick="Tools.ExportCode()" />
-          </td></tr>
-          <tr><td style="vertical-align: bottom;">
-            <input type="button" value="generate Arduino code" onclick="Arduino.GenerateCode()" />
-          </td></tr>
-        </table>
-      </div>
-      <div style="float:right;width:230px;height:120px;background-color:#6f6f6f;border-width:2px;border-color:#484848;border-style:ridge;border-radius:10px;">
-        <table style="height:100%;">
-          <tr><td>
-            <i title="If the browser is too slow, the animation on the led strip is much faster. This factor shows how much faster the led strip will be.">
-              Speed factor: <em id='info_speedfactor'>1x</em><br>
-              Current: <em id='info_current'>0A (max: 0A)</em><br>
-              RAM: <em id='info_ram'>0 bytes</em><br>
-              Flash: <em id='info_ram'>4.4 kb</em><br>
-            </i>
-          </td></tr>
-          <tr><td style="vertical-align: bottom;">
-            
-          </td></tr>
-        </table>
-      </div>
-      <h1>LED Strip Effects Generator</h1>
-      <h2>Led Strips:</h2>
-      <input type="button" onclick="addLedStrip();" value="Add Led Strip" />
+  
+    <script>
+      function charge() {
+        if (window.innerWidth > 500) {
+          document.getElementsByClassName('expand-container')[0].style.display = 'none';
+        }
+
+        var sli = document.getElementsByClassName("sidenav-list-item");
+        for (let i = 0; i < sli.length; i++) {
+          sli[i].addEventListener("click", function () {
+            this.id = (this.id == 'active') ? 'notactive' : 'active';
+            let panel = this.nextElementSibling;
+            panel.style.display = panel.style.display == "block" ? "none" : "block";
+          });
+        }
+      }
+
+      function expand(e) {
+        var sidenav = document.getElementsByClassName('sidenav')[0];
+        sidenav.id = (sidenav.id == 'show') ? 'noshow' : 'show';
+      }
+    </script>
     </div>
   </body>
 </html>

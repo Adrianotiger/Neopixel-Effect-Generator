@@ -8,41 +8,30 @@ var Tools = new class
   
   ImportCode()
   {
-    var black = document.createElement("div");
-    black.className = "formoverlayblack";
-    black.addEventListener("click", function(){
-      document.body.removeChild(black);
-    }.bind(this));
-    var window = document.createElement("div");
-    window.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-    }.bind(this));
-    window.className = "formwindow";
-    var h2 = document.createElement("h2");
-    h2.appendChild(document.createTextNode("Import script"));
-    window.appendChild(h2);
-    
+    var divy = document.getElementById('importDiv');
+    while(divy.childElementCount > 0){
+      divy.removeChild(divy.lastElementChild);
+    }
+
     var code = "Put your json with inside this box and load it.";
     
     var txtArea = document.createElement("textarea");
-    txtArea.setAttribute("style", "width:90%;min-height:30vh;max-height:70vh;overflow:scroll;background-color:white;text-align:left;overflow:auto;");
+    txtArea.className = 'textarea-import';
     txtArea.setAttribute("placeholder", code);
-    window.appendChild(txtArea);
+    divy.appendChild(txtArea);
     
-    window.appendChild(document.createElement("br"));
+    divy.appendChild(document.createElement("br"));
     
     var loadScript = document.createElement("button");
-    loadScript.appendChild(document.createTextNode("IMPORT"));
-    window.appendChild(loadScript);
+    loadScript.appendChild(document.createTextNode("Import"));
+    loadScript.className = 'btn-copy';
+    divy.appendChild(loadScript);
     loadScript.addEventListener("click", ()=>{
-      this._importCode(black, txtArea.value);
+      this._importCode(txtArea.value);
     });
-    black.appendChild(window);
-    document.body.appendChild(black);
   }
   
-  _importCode(div, txt)
+  _importCode(txt)
   {
     var json = "";
     try
@@ -54,13 +43,12 @@ var Tools = new class
       alert("Error parsing json: \n" + e + "\n");
       return;
     }
-    document.body.removeChild(div);
+
     console.log(json);
     if(json.NeoPixelEffects && json.NeoPixelEffects.strips)
     {
       while(LedStrips.GetStrips().length > 0)
         LedStrips.Remove(LedStrips.GetStrips()[0]);
-      
       for(var s in json.NeoPixelEffects.strips)
       {
         var ls = new LedStrip(json.NeoPixelEffects.strips[s].pin, json.NeoPixelEffects.strips[s].leds);
@@ -124,21 +112,11 @@ var Tools = new class
   
   ExportCode()
   {
-    var black = document.createElement("div");
-    black.className = "formoverlayblack";
-    black.addEventListener("click", function(){
-      document.body.removeChild(black);
-    }.bind(this));
-    var window = document.createElement("div");
-    window.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-    }.bind(this));
-    window.className = "formwindow";
-    var h2 = document.createElement("h2");
-    h2.appendChild(document.createTextNode("Export script"));
-    window.appendChild(h2);
-    
+    var divy = document.getElementById('exportDiv');
+    while(divy.childElementCount > 0){
+      divy.removeChild(divy.lastElementChild);
+    }
+
     var spaces = 8;
     var code = "{\"NeoPixelEffects\": {\n";
     code += "  \"strips\":[\n";
@@ -165,9 +143,14 @@ var Tools = new class
     code += "  ]\n";
     code += "}\n}";
     
+    var btn = document.createElement('button');
+    btn.innerHTML = 'Copy'
+    btn.className = 'btn-copy';
+
     var txtArea = document.createElement("pre");
-    txtArea.setAttribute("style", "max-height:70vh;overflow:scroll;background-color:white;text-align:left;overflow:auto;font-size:70%;");
+    txtArea.setAttribute("style", "max-height:70vh;text-align:left;overflow:auto;font-size:70%;");
     var txtCode = document.createElement("code");
+    txtCode.style.fontSize = '14px';
     txtArea.addEventListener("click", function(){
       var range = document.createRange();
       range.selectNode(txtArea);
@@ -176,10 +159,22 @@ var Tools = new class
     });
     txtCode.appendChild(document.createTextNode(code));
     txtArea.appendChild(txtCode);
-    window.appendChild(txtArea);
-    
-    black.appendChild(window);
-    document.body.appendChild(black);
+
+    divy.className = 'settings-div';
+    var textarea = document.createElement("textarea");
+    textarea.setAttribute('readonly', 'true');
+    textarea.className = 'hide-input-for-copy';
+    textarea.innerHTML = code;
+
+    btn.addEventListener('click', () => {
+      textarea.select();
+      document.execCommand('Copy');
+      alert('Copied!');
+    });
+
+    divy.appendChild(btn);
+    divy.appendChild(txtArea);
+    divy.appendChild(textarea);
     
     if(hljs)
       hljs.highlightBlock(txtArea);

@@ -61,6 +61,7 @@ var Effects = new class
   
   ChooseEffect(e, loop)
   {
+    
     var black = document.createElement("div");
     black.className = "formoverlayblack";
     black.addEventListener("click", function(){
@@ -147,8 +148,7 @@ class Effect
     this.div = document.createElement("div");
     this.div.className = "effectdiv";
     
-    this.table = document.createElement("table");
-    this.table.setAttribute("border", "2");
+    this.table = document.createElement("div");
   }
   
   static get Author() {return "Adriano Petrucci";}
@@ -156,31 +156,34 @@ class Effect
   
   Init(leds) 
   {
-    var tr = document.createElement("tr");
-    var td = document.createElement("td");
-    this.effectActive = td;
-    td.setAttribute("style", "color:white;min-width:80px;background-color:black;");
-    td.appendChild(document.createTextNode(this.name));
-    tr.appendChild(td);
-    td = document.createElement("td");
-    td.setAttribute("style", "color:yellow;text-decoration:underline;cursor:pointer;");
-    td.appendChild(document.createTextNode("Animation"));
-    td.addEventListener("click", function(){
+    var btn = document.createElement("div");
+
+    this.effectActive = btn;
+
+    btn.className = "btn-effect";
+    btn.appendChild(document.createTextNode(this.name));
+    this.div.appendChild(btn);
+
+    btn = document.createElement("div");
+    btn.className = "btn-effect-item";
+    btn.appendChild(document.createTextNode("Animation"));
+    btn.addEventListener("click", function(){
       this.OpenAnimationSettings();
     }.bind(this));
-    tr.appendChild(td);
-    td = document.createElement("td");
-    td.setAttribute("style", "color:yellow;text-decoration:underline;cursor:pointer;");
+    this.div.appendChild(btn);
+
+    btn = document.createElement("div");
+    btn.className = "btn-effect-item";
     if(this.colorSettings.length > 0)
     {
-      td.appendChild(document.createTextNode("Colors"));
-      td.addEventListener("click", function(){
+      btn.appendChild(document.createTextNode("Colors"));
+      btn.addEventListener("click", function(){
         this.OpenColorSettings();
       }.bind(this));
     }
-    tr.appendChild(td);
-    this.table.appendChild(tr);
-    document.getElementById("ledeffectsdiv").appendChild(this.table);
+    this.div.appendChild(btn);
+
+    document.getElementById("ledeffectsdiv").appendChild(this.div);
   }
   
   OpenAnimationSettings()
@@ -197,10 +200,10 @@ class Effect
                         break;
         case 'button': inputs.push(Form.CreateCloseButton(s.title, s.update));
                         break;
-        default:        break;
+        default:          break;
       }
     }
-    Form.GetInputs("Effect Animation Settings", inputs);
+    Form.GetInputsSetttings('Animation of '+this.name, inputs);
   }
   
   OpenColorSettings()
@@ -213,12 +216,12 @@ class Effect
       {
         case 'color': inputs.push(Form.CreateColorInput(s.title, s.color().red, s.color().green, s.color().blue, s.update));
                         break;
-        case 'button': inputs.push(Form.CreateCloseButton(s.title, s.update));
+        case 'button': inputs.push(Form.CreateColorButton(s.title, s.update));
                         break;
         default:        break;
       }
     }
-    Form.GetInputs("Color Settings", inputs);
+    Form.GetInputsSetttings('Color of '+this.name, inputs);
   }
   
   InitEffect()

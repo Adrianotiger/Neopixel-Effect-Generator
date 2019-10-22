@@ -15,14 +15,16 @@ class Slider
     line.className = "form_sliderline";
     this.div.appendChild(line);
 
+    var defLine = document.createElement("div");
+    defLine.className = 'end-slider';
+    defLine.setAttribute("style", "left:"+parseInt(300*(def-min)/this.maxAbs)+"px");
+    this.div.appendChild(defLine);
+
     this.slider = document.createElement("div");
     this.slider.addEventListener("mousedown", function(e){e.preventDefault();return false;});
-    this.slider.setAttribute("style", "position:absolute;left:"+parseInt(300*(this.val-min)/this.maxAbs - 10)+"px;top:13px;height:20px;width:20px;border-radius:12px;background-color:white;border-style:ridge;border-width:2px;border-color:#aaaaff;");
+    this.slider.className = 'slider';
+    this.slider.setAttribute("style", "left:"+parseInt(300*(this.val-min)/this.maxAbs - 10)+"px");
     this.div.appendChild(this.slider);
-
-    var defLine = document.createElement("div");
-    defLine.setAttribute("style", "position:absolute;left:"+parseInt(300*(def-min)/this.maxAbs)+"px;top:20px;height:10px;width:4px;border-radius:2px;background-color:white;");
-    this.div.appendChild(defLine);
 
     this.value = document.createElement("i");
     this.value.setAttribute("style", "min-width:10px;height:10px;position:absolute;right:0px;top:0px;font-size:12px;");
