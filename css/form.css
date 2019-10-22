@@ -9,17 +9,17 @@
 /*    Include Fonts   */
 @font-face{
   font-family: 'Space Grotesk';
-  src: url(/css/fonts/SpaceGrotesk-Bold.otf);
+  src: url('css/fonts/SpaceGrotesk-Bold.otf');
   font-weight: 700;
 }
 @font-face{
   font-family: 'Space Grotesk';
-  src: url(/css/fonts/SpaceGrotesk-Regular.otf);
+  src: url('css/fonts/SpaceGrotesk-Regular.otf');
   font-weight: 400;
 }
 @font-face{
   font-family: 'Space Grotesk';
-  src: url(/css/fonts/SpaceGrotesk-Light.otf);
+  src: url('css/fonts/SpaceGrotesk-Light.otf');
   font-weight: 300;
 }
 
