@@ -1,8 +1,12 @@
 # Fade effect
 
 * Author: Adriano Petrucci
-* Version: 1.0
+* Version: 1.2
 * Changelog:
+    * 1.2:
+        * Solved a bug on duration (instead of fading, it was blinking if the duration was too high)
+    * 1.1:
+        * Updated for Version 2.0
     * 1.0:
         * First version
 
