@@ -1,5 +1,7 @@
 /* global Form, Effects */
 
+// Version 1.3
+// - bug on duration (when not int)
 // Version 1.2
 // - updated for Generator 2.0
 // Version 1.1
@@ -153,7 +155,7 @@ class EffectFade extends Effect
     code += "  if(millis() - " + s + ".effStart < " + this.delay + " * (" + s + ".effStep)) return 0x00;\n";
     code += "  uint8_t r,g,b;\n";
     code += "  double e;\n";
-    code += "  e = (" + s + ".effStep * " + this.delay + ") / " + this.options['duration'] + ";\n";
+    code += "  e = (" + s + ".effStep * " + this.delay + ") / (double)" + this.options['duration'] + ";\n";
     code += "  r = ( e ) * " + this.colors[1].red + " + " + this.colors[0].red + " * ( 1.0 - e );\n";
     code += "  g = ( e ) * " + this.colors[1].green + " + " + this.colors[0].green + " * ( 1.0 - e );\n";
     code += "  b = ( e ) * " + this.colors[1].blue + " + " + this.colors[0].blue + " * ( 1.0 - e );\n";
