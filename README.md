@@ -4,11 +4,11 @@ Online editor to generate Arduino code for neopixel ledstrips without programmin
 With this editor, you can create some effects for your led strips. It is easy and you don't need to know how programming it, the code will be generated directly on the webpage.
 
 # Try it
-Open this link https://adrianotiger.github.io/Neopixel-Effect-Generator/ and begin to "draw" your animation.
-![screenshot](https://github.com/Adrianotiger/Neopixel-Effect-Generator/raw/master/doc/screenshot.jpg)
+Open this link https://dallinbeutler.github.io/Neopixel-Effect-Generator/ and begin to "draw" your animation.
+![screenshot](https://github.com/dallinbeutler/Neopixel-Effect-Generator/raw/master/doc/screenshot.jpg)
 
 Since v3.0, it works also on smartphones:
-![screenshot](https://github.com/Adrianotiger/Neopixel-Effect-Generator/raw/master/doc/screenshot_mobile.jpg)
+![screenshot](https://github.com/dallinbeutler/Neopixel-Effect-Generator/raw/master/doc/screenshot_mobile.jpg)
 
 
 ## How to use the webpage?
