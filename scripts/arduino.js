@@ -9,6 +9,9 @@ var Arduino = new class
     this.stripsType = "[STRIPS_TYPE]";
     
     this.baseCode = "#include <Adafruit_NeoPixel.h>\n\n";
+    this.baseCode += "#ifdef __AVR__";
+    this.baseCode += "#include <avr/power.h> // Required for 16 MHz Adafruit Trinket";
+    this.baseCode += "#endif";
     this.baseCode += "class Strip\n{\npublic:\n  uint8_t   effect;\n  uint8_t   effects;\n  uint16_t  effStep;\n  unsigned long effStart;\n  Adafruit_NeoPixel strip;\n";
       this.baseCode += "  Strip(uint16_t leds, uint8_t pin, uint8_t toteffects, uint16_t striptype) : strip(leds, pin, striptype) {\n    effect = -1;\n    effects = toteffects;\n    Reset();\n  }\n";
       this.baseCode += "  void Reset(){\n    effStep = 0;\n    effect = (effect + 1) % effects;\n    effStart = millis();\n  }\n";
@@ -19,6 +22,9 @@ var Arduino = new class
     this.baseCode += "";
     this.baseCode += "//[GLOBAL_VARIABLES]\n\n";
     this.baseCode += "void setup() {\n\n";
+    this.baseCode += "  #if defined(__AVR_ATtiny85__) && (F_CPU == 8000000)";
+    this.baseCode += "  clock_prescale_set(clock_div_1);";
+    this.baseCode += "  #endif";
     this.baseCode += "  //Your setup here:\n\n";
     this.baseCode += "//[STRIPS_INIT]\n";
     this.baseCode += "}\n\n";
